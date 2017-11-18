@@ -15,7 +15,7 @@ script_version=1.0.0
 # If no input is provided, exit out and provide help
 if [ $# == 0 ]
     then
-    printf "\n\n$(basename $0): finds and replaces selected text in a file.\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\nUsage: $(basename $0) text_replacement_file.tsv input_file.txt output_file.txt\n\nUsage details:\n**Output file should not exist ahead of time, or else it will be overwritten.\ntext_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n\n"
+    printf "\n$(basename $0): finds and replaces selected text in a file.\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\nUsage: $(basename $0) text_replacement_file.tsv input_file.txt output_file.txt\n\nUsage details:\n**Output file should not exist ahead of time, or else it will be overwritten.\ntext_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n\n"
     exit 1
 fi
 # Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
@@ -24,8 +24,8 @@ fi
 
 # set variables from user input:
 replacement_info=$1
-input_name=$3
-output_name=$4
+input_name=$2
+output_name=$3
 
 # By default, set working directory to present working directory (pwd)
 work_dir=$(pwd)
@@ -75,7 +75,6 @@ rm ${output_name}-e
 
 echo ""
 echo "Replacing finished. Output saved as $(basename ${output_name})."
-echo ""
 echo ""
 
 echo "$(basename $0): finished."
