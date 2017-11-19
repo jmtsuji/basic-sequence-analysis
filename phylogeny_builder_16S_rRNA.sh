@@ -16,7 +16,7 @@ date_code=$(date '+%y%m%d')
 # If input field is empty, print help and end script
 if [ $# == 0 ]
 then
-printf "    $(basename $0): automated 16S/18S rRNA gene alignment and phylogeny building\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca; Neufeld research group) for error reports or feature requests.\n\nUsage: $(basename $0) input_16S.fasta 16S_start 16S_end 16S_model RAxML_iterations seq_evol_model threads 2>&1 | tee $(basename $0 .sh).log \n\n***Requirements:\n1. input_16S.fasta: should be an unaligned FastA file containing 16S/18S rRNA gene sequences. Avoid very long sequence names or special characters in sequence names (can cause problems with RAxML).\n2. 16S_start/end: start and end positions to truncate the 16S alignment to, compared to a standard reference alignment (like the position #s on 16S PCR primers, like 341f-806r).\n3. 16S_model: either bacteria, archaea, or eukarya (lowercase), to guide model usage for ssu-align\n4. RAxML iterations: number of maximum likelihood iterations when making the tree (e.g., 100).\n6. seq_evol_model (sequence evolution model): See RAxML manual for possible sequence evolution models, e.g., GTRCAT.\n5. Output: note that your output will be saved to the folder where you run this script and will have output names based on the input file name.\n\nDependencies: ssu-align and RAxML (parallelized).\n\n"
+printf "\n$(basename $0): automated 16S/18S rRNA gene alignment and phylogeny building\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca; Neufeld research group) for error reports or feature requests.\n\nUsage: $(basename $0) input_16S.fasta 16S_start 16S_end 16S_model RAxML_iterations seq_evol_model threads 2>&1 | tee $(basename $0 .sh).log \n\n***Requirements:\n1. input_16S.fasta: should be an unaligned FastA file containing 16S/18S rRNA gene sequences. Avoid very long sequence names or special characters in sequence names (can cause problems with RAxML).\n2. 16S_start/end: start and end positions to truncate the 16S alignment to, compared to a standard reference alignment (like the position #s on 16S PCR primers, like 341f-806r).\n3. 16S_model: either bacteria, archaea, or eukarya (lowercase), to guide model usage for ssu-align\n4. RAxML iterations: number of maximum likelihood iterations when making the tree (e.g., 100).\n6. seq_evol_model (sequence evolution model): See RAxML manual for possible sequence evolution models, e.g., GTRCAT.\n5. Output: note that your output will be saved to the folder where you run this script and will have output names based on the input file name.\n\nDependencies: ssu-align and RAxML (raxmlHPC-PTHREADS-SSE3).\n\n"
 exit 1
 fi
 # Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
@@ -36,7 +36,7 @@ seq_evol_model=$6
 threads=$7 # for RAxML
 #################################################################
 
-echo "Running $(basename $0) version $script_version on ${date_code} (yymmdd). Will use ${threads} threads (hard-coded into script for now)."
+echo "Running $(basename $0) version $script_version on ${date_code} (yymmdd). Will use ${threads} threads for RAxML."
 echo ""
 
 # Test that the input file exists, and exit if it does not
@@ -177,6 +177,6 @@ end_time=$(date)
 echo ""
 echo ""
 
-echo "$(basename $0): finished. Output can be fount in ${out_dir}."
+echo "$(basename $0): finished. Output can be found in ${out_dir}."
 echo "Started at ${start_time} and finished at ${end_time}."
 echo ""
