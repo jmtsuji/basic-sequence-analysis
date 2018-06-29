@@ -68,7 +68,7 @@ function run_sed {
 	# Make a copy of the tree file for multiple in-place edits
 	cp "${INPUT_FILEPATH}" "${OUTPUT_FILEPATH}"
 
-	for i in $(seq 1 ${num_names}); do
+	for i in $(seq 1 ${#names_old[@]}); do
 
 		# Set counter to start from zero
 		j=$((${i}-1))
@@ -84,8 +84,9 @@ function run_sed {
 
 	done
 
-	# Remove backup file created by sed once done
-	rm ${OUTPUT_FILEPATH}-e
+	# TODO - remove this once truly considered unnecessary
+	## Remove backup file created by sed once done
+	#rm ${OUTPUT_FILEPATH}-e
 
 }
 
