@@ -1,26 +1,24 @@
 #!/bin/bash
+set -euo pipefail
 # text_find_and_replace.sh
 # Copyright Jackson M. Tsuji, 2017
 # Neufeld lab, University of Waterloo, Canada
 # Created Nov. 18, 2017
 # Description: Finds and replaces target names in a file with user-provided names. Works for any text file (e.g., renaming FastA sequence headers, phylogenetic tree file names, and so on.
 
-# Basic script stuff (from Vince Buffalo's "Bioinformatics Data Skills" (1st Ed.) chapter 12, pg 397):
-set -e
-set -u
-set -o pipefail
-
-script_version=1.1.0
+script_version=1.1.1
 
 # If no input is provided, exit out and provide help
-if [ $# == 0 ]
-    then
-    printf "\n$(basename $0): finds and replaces selected text in a file.\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\nUsage: $(basename $0) text_replacement_file.tsv input_file.txt output_file.txt\n\nUsage details:\n**Output file should not exist ahead of time, or else it will be overwritten.\ntext_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\nAVOID special characters (other than whitespace, for which support was added in v1.1.0)\n\n"
-    exit 1
+if [ $# == 0 ]; then
+	printf "\n$(basename $0): finds and replaces selected text in a file.\n"
+	printf "Version: ${script_version}\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
+	printf "Usage: $(basename $0) text_replacement_file.tsv input_file.txt output_file.txt\n\n"
+	printf "Usage details:\n* Output file should not exist ahead of time, or else it will be overwritten.\n"
+	printf "* text_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n"
+	printf "AVOID special characters (other than whitespace, for which support was added in v1.1.0)\n\n"
+   	exit 1
 fi
-# Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
-# Test for empty variable: Bioinformatics Data Skills Ch. 12 pg 403-404, and http://www.tldp.org/LDP/Bash-Beginners-Guide/html/sect_09_07.html and http://stackoverflow.com/a/2428006 (both accessed Feb 21, 2017)
-
 
 # set variables from user input:
 replacement_info=$1
