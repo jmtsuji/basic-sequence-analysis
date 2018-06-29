@@ -10,6 +10,7 @@ script_version=1.2.0
 
 # If no input is provided, exit out and provide help
 if [ $# == 0 ]; then
+
 	printf "\n$(basename $0): finds and replaces selected text in a file.\n"
 	printf "Version: ${script_version}\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
@@ -18,6 +19,7 @@ if [ $# == 0 ]; then
 	printf "* text_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n"
 	printf "AVOID special characters (other than whitespace, for which support was added in v1.1.0)\n\n"
    	exit 1
+
 fi
 
 # Set variables from user arguments
@@ -25,14 +27,8 @@ replacement_info=$1
 input_name=$2
 output_name=$3
 
-# By default, set working directory to present working directory (pwd)
-# TODO - delete this -- it is redundant.
-work_dir=$(pwd)
-
 printf "Running $(basename $0), version $script_version.\n"
 printf "Replacing items in file $(basename ${input_name}), based on the list provided in $(basename ${replacement_info}).\n"
-
-cd "${work_dir}"
 
 # Temporarily change the internal fields separator (IFS) so that whitespaces in find/replace scheme do not create new entries. See Vince Buffalo's "Bioinformatics Data Skills" (1st Ed.) chapter 12, pg 407 and corresponding Github page README at https://github.com/vsbuffalo/bds-files/tree/master/chapter-12-pipelines (accessed Nov 19, 2017)
 OFS="$IFS"
