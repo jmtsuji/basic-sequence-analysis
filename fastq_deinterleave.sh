@@ -5,7 +5,7 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 
 # If no input is provided, provide help and exit
-if [ $# == 0 ]; then
+if [ $# -lt 2 ]; then
 	# Assign script name
 	script_name=${0##*/}
 	script_name=${0%.*}
@@ -14,6 +14,9 @@ if [ $# == 0 ]; then
 	printf "${0##*/}: simple script to iteratively deinterleave gzipped FastQ files.\n"
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
+	printf "Installation: the bbmap suite's 'reformat.sh' is a dependency. You can install in a conda environment, e.g.,\n"
+	printf "              conda create -n bbmap -c bioconda bbmap\n"
+	printf "              conda activate bbmap\n\n"
 	printf "Usage: ${0##*/} input_dir output_dir 2>&1 | tee ${script_name}.log\n\n"
 	printf "Usage details:\n"
 	printf "   1. input_dir: Path to the directory containing gzipped interleaved FastQ files. Interleaved FastQ files MUST have the extension .fastq.gz!!\n"
@@ -36,6 +39,9 @@ output_dir=$2
 interleaved_fastq_files=($(find ${input_dir} -iname "*.fastq.gz"))
 (>&2 echo "[ $(date -u) ]: Found ${#interleaved_fastq_files[@]} gzipped FastQ files.")
 
+# Make output dir
+mkdir -p ${output_dir}
+
 (>&2 echo "[ $(date -u) ]: Deinterleaving the FastQ files...")
 for fastq_file in ${interleaved_fastq_files[@]}; do
 
@@ -45,18 +51,15 @@ for fastq_file in ${interleaved_fastq_files[@]}; do
 
 	echo "[ $(date -u) ]: ${fastq_file_base}"
 
-	# Warn user if it looks like it might not need deinterleaving
-	file_ending=$(echo ${fastq_file_base} | tr "_" " " | awk '{ print $NF }')
-	if [ ${file_ending} == "R1" ]; then
-		echo "[ $(date -u) ]: WARNING: '${fastq_file_base}' ends with 'R1' -- is it already deinterleaved?? Check this file..."
-	elif [ ${file_ending} == "R2" ]; then
-		echo "[ $(date -u) ]: WARNING: '${fastq_file_base}' ends with 'R2' -- is it already deinterleaved?? Check this file..."
-	fi
-
-	# De-interleave based on to https://www.biostars.org/p/141256/#142018 (accessed 171115)
-	gunzip -c ${fastq_file} | paste - - - - - - - - \
-	| tee >(cut -f 1-4 | tr "\t" "\n" | gzip > ${output_dir}/${fastq_file_base}_R1.fastq.gz) \
-	| cut -f 5-8 | tr "\t" "\n" | gzip > ${output_dir}/${fastq_file_base}_R2.fastq.gz
+        # Run the deinterleaver and print log if something goes wrong
+        reformat.sh in="${fastq_file}" out="${output_dir}/${fastq_file_base}_R1.fastq.gz" \
+                out2="${output_dir}/${fastq_file_base}_R2.fastq.gz" verifyinterleaved=t ow=t 2>/dev/null || \
+                ( rm "${output_dir}/${fastq_file_base}_R1.fastq.gz" "${output_dir}/${fastq_file_base}_R2.fastq.gz" && \
+                reformat.sh in="${fastq_file}" out="${output_dir}/${fastq_file_base}_R1.fastq.gz" \
+                        out2="${output_dir}/${fastq_file_base}_R2.fastq.gz" verifyinterleaved=t ow=t || \
+                rm "${output_dir}/${fastq_file_base}_R1.fastq.gz" "${output_dir}/${fastq_file_base}_R2.fastq.gz" && \
+                echo "[ $(date -u) ]: ERROR: failed at '${fastq_file_base}' -- see info above. Exiting..." && \
+                exit 1 )
 
 done
 
