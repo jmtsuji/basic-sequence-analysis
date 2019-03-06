@@ -68,7 +68,7 @@ mv ${output_dir}/GToTree.log ${output_dir}/input_genomes.list ${output_dir}/alig
 
 # Re-make the phylogeny manually to use my preferred settings for IQ-TREE:
 input_alignment_filepath="${output_dir}/alignment/Aligned_SCGs.faa"
-name_base="${phylogenetic_marker_set%.*}_phylogeny"
+name_base="${gtotree_phylogenetic_marker_set%.*}_phylogeny"
 
 if [ ${iqtree_boostrap_type} = "normal" ]; then
 	iqtree_bootstrap_flag="b"
@@ -79,7 +79,7 @@ else
 	exit 1
 fi
 
-(>&2 echo "[ $(date -u) ]: Running IQ-TREE with ${threads} threads and ${bootstraps} '${iqtree_boostrap_type}' bootstrap replicates (could take time)")
+(>&2 echo "[ $(date -u) ]: Running IQ-TREE with ${threads} threads and ${iqtree_bootstraps} '${iqtree_boostrap_type}' bootstrap replicates (could take time)")
 (>&2 echo "[ $(date -u) ]: Command: iqtree -s ${input_alignment_filepath} -pre ${output_dir}/phylogeny/${name_base} -nt ${threads} -seed ${iqtree_phylogeny_seed} -${iqtree_bootstrap_flag} ${iqtree_bootstraps} -m MFP >/dev/null")
 iqtree -s ${input_alignment_filepath} -pre ${output_dir}/phylogeny/${name_base} -nt ${threads} -seed ${iqtree_phylogeny_seed} -${iqtree_bootstrap_flag} ${iqtree_bootstraps} -m MFP >/dev/null
 (>&2 echo "[ $(date -u) ]: IQ-TREE: finished.")
