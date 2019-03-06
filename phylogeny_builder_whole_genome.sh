@@ -6,7 +6,7 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, 2019
 
 # If no input is provided, provide help and exit
-if [ $# -lt 2 ]; then
+if [ $# -lt 3 ]; then
 	# Assign script name
 	script_name=${0##*/}
 	script_name=${0%.*}
@@ -50,7 +50,7 @@ mkdir -p ${output_dir}/phylogeny ${output_dir}/summary
 # Get genome list
 find ${genome_dir} -iname "*.fna" | sort -h > ${output_dir}/input_genomes.list # N.B., genomes must be unzipped fna files.
 
-if [ $(find ${genome_dir} -iname "*.fna" | wc -l) = 0 ];
+if [ $(find ${genome_dir} -iname "*.fna" | wc -l) = 0 ]; then
 	(>&2 echo "[ $(date -u) ]: ERROR: found no files with extension '*.fna' in folder '${genome_dir}'. Exiting...")
 	exit 1
 fi
