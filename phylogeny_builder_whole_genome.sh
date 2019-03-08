@@ -21,7 +21,7 @@ if [ $# -lt 2 ]; then
 	printf "Version: ${VERSION}\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
 	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.5.\n\n"
-	printf "Usage: ${script_name} [OPTIONS] input_genome_directory output_directory 2>&1 | tee ${script_name}.log\n\n"
+	printf "Usage: ${0##*/} [OPTIONS] input_genome_directory output_directory 2>&1 | tee ${script_name}.log\n\n"
 	printf "Positional arguments:\n"
 	printf "   1. input_genome_directory: Path to the directory containing unzipped FastA nucleotide files for all genomes to be run. FastA files MUST have the extensions '*.fna' to be run!!\n"
 	printf "   2. output_directory: Path to the directory where the genome phylogeny will be built. For safety, the script will not run if the directory already exists.\n\n"
