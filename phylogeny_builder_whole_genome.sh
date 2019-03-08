@@ -5,15 +5,20 @@ set -euo pipefail
 # Run a whole genome phylogeny for a set of prokaryotic genomes
 # Copyright Jackson M. Tsuji, 2019
 
+# Version
+VERSION=1.1.1
+
+# Assign script name
+script_name=${0##*/}
+script_name=${0%.*}
+
 # If no input is provided, provide help and exit
 if [ $# -lt 3 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${0%.*}
 
 	# Help statement
 	printf "${script_name}: simple script to run whole genome phylogeny on a set of input FastA nuclteotide genome files.\n"
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Version: ${VERSION}\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
 	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.5.\n\n"
 	printf "Usage: ${script_name} input_genome_directory output_directory threads 2>&1 | tee ${script_name}.log\n\n"
@@ -46,8 +51,9 @@ iqtree_bootstraps=1000
 iqtree_phylogeny_seed=53 # random number; can change as you like
 
 # Startup reporting
-(>&2 echo "[ $(date -u) ]: Running ${0##*/}")
-(>&2 echo "[ $(date -u) ]: Command: ${0##*/} ${@}")
+(>&2 echo "[ $(date -u) ]: Running ${script_name}")
+(>&2 echo "[ $(date -u) ]: Version: ${VERSION}")
+(>&2 echo "[ $(date -u) ]: Command: ${script_name} ${@}")
 (>&2 echo "[ $(date -u) ]: input_genome_directory: ${genome_dir}")
 (>&2 echo "[ $(date -u) ]: output_directory: ${output_dir}")
 (>&2 echo "[ $(date -u) ]: threads: ${threads}")
