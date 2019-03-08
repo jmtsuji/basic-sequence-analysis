@@ -21,25 +21,28 @@ if [ $# -lt 3 ]; then
 	printf "Version: ${VERSION}\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
 	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.5.\n\n"
-	printf "Usage: ${script_name} input_genome_directory output_directory threads 2>&1 | tee ${script_name}.log\n\n"
-	printf "Usage details:\n"
+	printf "Usage: ${script_name} [OPTIONS] input_genome_directory output_directory 2>&1 | tee ${script_name}.log\n\n"
+	printf "Positional arguments:\n"
 	printf "   1. input_genome_directory: Path to the directory containing unzipped FastA nucleotide files for all genomes to be run. FastA files MUST have the extensions '*.fna' to be run!!\n"
-	printf "   2. output_directory: Path to the directory where the genome phylogeny will be built.\n"
-	printf "   3. threads: Number of parallel threads to use in the analysis.\n"
-	printf "   4. phylogenetic marker gene set (OPTIONAL): the exact name of any of the phylogenetic marker gene sets allowable in GToTree (default: 'Universal_Hug_et_al.hmm'). Check the available sets by running the GToTree command 'gtt-hmms'.\n\n"
+	printf "   2. output_directory: Path to the directory where the genome phylogeny will be built. For safety, the script will not run if the directory already exists.\n\n"
+	printf "Options (optional):\n"
+	printf "   -p   phylogenetic marker gene set: the exact name of any of the phylogenetic marker gene sets allowable in GToTree (default: 'Universal_Hug_et_al.hmm'). Check the available sets by running the GToTree command 'gtt-hmms'.\n"
+	printf "   -t   threads: the exact name of any of the phylogenetic marker gene sets allowable in GToTree (default: 'Universal_Hug_et_al.hmm'). Check the available sets by running the GToTree command 'gtt-hmms'.\n\n"
 	# Exit
 	exit 1
 fi
 
-# Set user variables
+# Set positional arguments
 genome_dir=$1
 output_dir=$2
+
+
 threads=$3
 
 # Optionally set the phylogenetic marker gene set
 if [ $# -eq 4 ]; then
 	gtotree_phylogenetic_marker_set=$4
-elif if [ $# -eq 3 ]; then
+elif [ $# -eq 3 ]; then
 	gtotree_phylogenetic_marker_set="Universal_Hug_et_al.hmm" # You can change this to any option allowable by GToTree.
 fi
 
@@ -59,7 +62,13 @@ iqtree_phylogeny_seed=53 # random number; can change as you like
 (>&2 echo "[ $(date -u) ]: threads: ${threads}")
 (>&2 echo "[ $(date -u) ]: gtotree_phylogenetic_marker_set: ${gtotree_phylogenetic_marker_set}")
 
-# Make output directories
+# Check if the output directory exists
+if [ -d ${output_dir} ]; then
+	(>&2 echo "[ $(date -u) ]: ERROR: output_directory '${output_dir}' already exists. Please delete it before running this script. Exiting...")
+	exit 1
+fi
+
+# Make output subdirectories
 mkdir -p ${output_dir}/phylogeny ${output_dir}/summary
 
 # Get genome list
