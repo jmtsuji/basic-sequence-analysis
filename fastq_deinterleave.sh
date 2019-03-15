@@ -4,14 +4,17 @@ set -euo pipefail
 # fastq_deinterleave.sh
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 
+VERSION=$(basic-sequence-analysis-version)
+
 # If no input is provided, provide help and exit
 if [ $# -lt 2 ]; then
 	# Assign script name
 	script_name=${0##*/}
-	script_name=${0%.*}
+	script_name=${script_name%.*}
 
 	# Help statement
-	printf "${0##*/}: simple script to iteratively deinterleave gzipped FastQ files.\n"
+	printf "${script_name}: simple script to iteratively deinterleave gzipped FastQ files.\n"
+	printf "Version: ${VERSION}\n"
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
 	printf "Installation: the bbmap suite's 'reformat.sh' is a dependency. You can install in a conda environment, e.g.,\n"
@@ -21,6 +24,7 @@ if [ $# -lt 2 ]; then
 	printf "Usage details:\n"
 	printf "   1. input_dir: Path to the directory containing gzipped interleaved FastQ files. Interleaved FastQ files MUST have the extension .fastq.gz!!\n"
 	printf "   2. output_dir: Path to the directory where you want the deinterleaved files to be output. Anything already there might be overwritten -- be careful. Output files will have _R1 and _R2 appended to the end of the filenames.\n\n"
+
 	# Exit
 	exit 1
 fi
@@ -63,5 +67,5 @@ for fastq_file in ${interleaved_fastq_files[@]}; do
 
 done
 
-(>&2 echo "[ $(date -u) ]: ${0##*/}: Finished.")
+(>&2 echo "[ $(date -u) ]: ${script_name}: Finished.")
 
