@@ -28,14 +28,14 @@ cd GToTree-${GToTree_version}/
 
 ### Install Jackson's wrapper for GToTree
 ```
-Jackson_script_version="1.1.1"
+Jackson_script_version="1.2.0"
 
 wget https://github.com/jmtsuji/basic-sequence-analysis/archive/v${Jackson_script_version}.tar.gz
 tar -xzf v${Jackson_script_version}.tar.gz
 rm v${Jackson_script_version}.tar.gz
 cd basic-sequence-analysis-v${Jackson_script_version}
 conda activate gtotree
-cp phylogeny_builder_whole_genome.sh ${CONDA_PREFIX}/bin
+cp phylogeny_builder_whole_genome.sh basic-sequence-analysis-version ${CONDA_PREFIX}/bin
 cd ..
 rm basic-sequence-analysis-v${Jackson_script_version}
 ```
