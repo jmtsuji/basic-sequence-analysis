@@ -22,7 +22,7 @@ if [ $# -lt 2 ]; then
 	printf "Usage: ${0##*/} input_aligned.fasta > output_dealigned.fasta\n\n"
 	printf "Usage details:\n"
 	printf "   - All this script does is remove dashes or dots in sequence (non-header) sections.\n"
-	printf "   - To receive from STDIN, run as $(basename $0) - > output_dealigned.fasta\n\n"
+	printf "   - To receive from STDIN, use '-' as the input_aligned.fasta entry\n\n"
 
 	# Exit
 	exit 1
