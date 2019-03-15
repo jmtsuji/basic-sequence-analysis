@@ -9,10 +9,10 @@ VERSION=$(basic-sequence-analysis-version)
 if [ $# -lt 1 ]; then
 	# Assign script name
 	script_name=${0##*/}
-	script_name=${0%.*}
+	script_name=${script_name%.*}
 
 	# Help statement
-	printf "${0##*/}: Prints names of sequences in a FastQ file.\n"
+	printf "${script_name}: Prints names of sequences in a FastQ file.\n"
 	printf "Version: ${VERSION}\n"
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
