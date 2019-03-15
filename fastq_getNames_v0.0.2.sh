@@ -1,28 +1,35 @@
-#!/bin/bash
-# Created April 7, 2016, by Jackson Tsuji
-# Description: prints names of sequences in a FastQ file
-# Last updated: April 17, 2016
+#!/usr/bin/env bash
+set -euo pipefail
+# fastq_get_names.sh
+# Prints names of sequences in a FastQ file
+# Copyright Jackson M. Tsuji, 2019
 
-# Basic script stuff (from Buffalo's Bioinformatics Data Skills book):
-set -e
-set -u
-set -o pipefail
+script_version=$(basic-sequence-analysis-version)
 
-script_version=0.0.2
-# This version is not verbose but prints FastQ names to STDOUT.
+if [ $# -lt 1 ]; then
+	# Assign script name
+	script_name=${0##*/}
+	script_name=${0%.*}
+
+	# Help statement
+	printf "${0##*/}: Prints names of sequences in a FastQ file.\n"
+	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+	printf "Dependencies: seqtk.\n\n"
+	printf "Usage: ${0##*/} fastQ_file.fastq.gz > fastQ_names.list\n\n"
+	printf "Details:\n"
+	printf "    - Names are printed to STDOUT\n"
+	printf "    - FastQ files can be gzipped or unzipped\n"
+	printf "    - This script removes the leading '@' from the FastQ file name but preserves the end comment\n\n"
+
+	# Exit
+	exit 1
+fi
 
 # Processing user input variable
 input_file=$1
-#output_file=$2
 
-#echo "Running $(basename $0), version $script_version, on input FastQ file $input_file."
-
-awk '{ if (NR%4 == 1) { print $0 } }' $input_file | cut -f 2- -d '@'
-# awk code is using the "if, then" format: IF ? THEN (: ELSE)
+# Awk code adapted from https://www.biostars.org/p/68477/ (accessed April 7, 2016), from Frederic Mahe
+seqtk seq ${input_file} | awk '{ if (NR%4 == 1) { print $0 } }' | cut -f 2- -d '@'
 # General idea: if row number is a multiple of four, then rename to the "id" variable appended by a numerical counter. Otherwise (i.e. row is not a multiple of four), print the entire original line
 
-
-# Some references:
-##  Main awk code adapted from https://www.biostars.org/p/68477/ (accessed April 7, 2016), from Frederic Mahe
-
-#echo "$(basename $0): Finished."
