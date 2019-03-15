@@ -1,16 +1,11 @@
-#!/bin/bash
-# phylogeny_builder_16S_rRNA.sh
-# Copyright Jackson M. Tsuji, 2017
-# Neufeld lab, University of Waterloo, Canada
-# Created Nov. 19, 2017
+#!/usr/bin/env bash
+set -euo pipefail
+
+# run_whole_genome_phylogeny.sh
 # Description: Given unaligned input sequences, creates a 16S rRNA gene phylogeny truncated to the region of interest.
+# Copyright Jackson M. Tsuji, 2019
 
-# Basic script stuff (from Vince Buffalo's "Bioinformatics Data Skills" (1st Ed.) chapter 12, pg 397):
-set -e
-set -u
-set -o pipefail
-
-script_version=1.0.0
+script_version=$(basic-sequence-analysis-version)
 date_code=$(date '+%y%m%d')
 
 # If input field is empty, print help and end script

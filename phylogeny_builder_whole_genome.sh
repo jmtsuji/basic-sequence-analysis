@@ -6,7 +6,7 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, 2019
 
 # Version
-VERSION=1.1.1
+VERSION=$(basic-sequence-analysis-version)
 
 # Assign script name
 script_name=${0##*/}
