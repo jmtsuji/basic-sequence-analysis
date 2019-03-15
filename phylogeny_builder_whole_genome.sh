@@ -18,7 +18,7 @@ if [ $# -lt 2 ]; then
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
 	printf "Version: ${VERSION}\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
-	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.5.\n\n"
+	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.10. See the tutorial file for installation.\n\n"
 	printf "Usage: ${0##*/} [OPTIONS] input_genome_directory output_directory 2>&1 | tee ${script_name}.log\n\n"
 	printf "Positional arguments:\n"
 	printf "   1. input_genome_directory: Path to the directory containing unzipped FastA nucleotide files for all genomes to be run. FastA files MUST have the extensions '*.fna' to be run!!\n"
