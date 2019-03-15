@@ -5,13 +5,13 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 # If no input is provided, provide help and exit
 if [ $# -lt 1 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
 
 	# Help statement
 	printf "${script_name}: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses.\n"
