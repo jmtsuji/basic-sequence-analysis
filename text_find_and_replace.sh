@@ -1,25 +1,34 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
+
 # text_find_and_replace.sh
-# Copyright Jackson M. Tsuji, 2017
-# Neufeld lab, University of Waterloo, Canada
-# Created Nov. 18, 2017
+# Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: Finds and replaces target names in a file with user-provided names. Works for any text file (e.g., renaming FastA sequence headers, phylogenetic tree file names, and so on.
 
-script_version=1.2.0
+# Startup processes
+VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
-# If no input is provided, exit out and provide help
-if [ $# == 0 ]; then
 
-	printf "\n$(basename $0): finds and replaces selected text in a file.\n"
-	printf "Version: ${script_version}\n"
-	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\n"
-	printf "Usage: $(basename $0) text_replacement_info_file.tsv input_file.txt output_file.txt\n\n"
-	printf "Usage details:\n* Output file should not exist ahead of time, or else it will be overwritten.\n"
-	printf "* text_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n"
-	printf "AVOID special characters (other than whitespace, for which support was added in v1.1.0)\n\n"
-   	exit 1
+# If no input is provided, provide help and exit
+if [ $# -lt 3 ]; then
 
+	# Help statement
+	printf "${script_name}: finds and replaces selected text in a file.\n"
+	printf "Version: ${VERSION}\n"
+	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+	printf "Dependencies: none outside of the basic-sequence-analysis suite\n\n"
+	printf "Usage: ${0##*/} text_replacement_info_file.tsv input_file.txt output_file.txt 2>&1 | tee ${script_name}.log\n\n"
+	printf "Usage details:\n"
+	printf "   - Output file should not exist ahead of time, or else it will be overwritten.\n"
+	printf "   - text_replacement_file.tsv: tab-separated file with headers. Old names (target) in first column, and new names (replacement) in second column. Case sensitive.\n"
+	printf "   - Find/replace does in sequential order down the text_replacement_file.tsv, so any naming collisions will be treated sequentially\n"
+	printf "   - I've done my best to support special characters but cannot guarantee that all will work...\n\n"
+
+	# Exit
+	exit 1
 fi
 
 # Get user arguments
@@ -92,7 +101,7 @@ function run_sed {
 
 function main {
 
-	printf "Running $(basename $0), version $script_version.\n"
+	printf "Running ${script_name}, version ${VERSION}.\n"
 	printf "Replacing items in file $(basename ${INPUT_FILEPATH}), based on the list provided in $(basename ${TEXT_REPLACEMENT_INFO_FILE}).\n"
 
 	read_input_tsv_file
@@ -100,7 +109,7 @@ function main {
 	run_sed
 
 	printf "\nReplacing finished. Output saved as $(basename ${OUTPUT_FILEPATH}).\n\n"
-	printf "$(basename $0): finished.\n\n"
+	printf "${script_name}: finished.\n\n"
 
 }
 
