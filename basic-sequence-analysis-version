@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# basic-sequence-analysis-version
+# Master version record for basic-sequence-analysis package
+# Copyright Jackson M. Tsuji, 2019
+
+# TODO - find a more elegant way to set the version!
+VERSION=v1.2.0
+
+echo ${VERSION}
+
