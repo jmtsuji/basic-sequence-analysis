@@ -5,10 +5,8 @@ set -euo pipefail
 # Run a whole genome phylogeny for a set of prokaryotic genomes
 # Copyright Jackson M. Tsuji, 2019
 
-# Version
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
-
-# Assign script name
 script_name=${0##*/}
 script_name=${script_name%.*}
 

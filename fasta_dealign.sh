@@ -5,13 +5,13 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: De-aligns input multi-FastA file.
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 # If no input is provided, provide help and exit
-if [ $# -lt 2 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
+if [ $# -lt 1 ]; then
 
 	# Help statement
 	printf "${script_name}: de-aligns input multi-FastA file.\n"

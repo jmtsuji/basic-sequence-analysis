@@ -5,13 +5,13 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: Switches between DNA and RNA (U's and T's)
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 # If no input is provided, provide help and exit
 if [ $# -lt 2 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
 
 	# Help statement
 	printf "${script_name}: swaps between U's and T's in FastA file (DNA <--> RNA).\n"

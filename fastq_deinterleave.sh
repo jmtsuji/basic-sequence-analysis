@@ -4,13 +4,13 @@ set -euo pipefail
 # fastq_deinterleave.sh
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 # If no input is provided, provide help and exit
 if [ $# -lt 2 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
 
 	# Help statement
 	printf "${script_name}: simple script to iteratively deinterleave gzipped FastQ files.\n"

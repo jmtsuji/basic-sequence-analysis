@@ -4,12 +4,12 @@ set -euo pipefail
 # Prints names of sequences in a FastQ file
 # Copyright Jackson M. Tsuji, 2019
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 if [ $# -lt 1 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
 
 	# Help statement
 	printf "${script_name}: Prints names of sequences in a FastQ file.\n"

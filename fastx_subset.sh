@@ -5,13 +5,13 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: subsamples all FastX in specified folder to desired read number/fraction.
 
+# Startup processes
 VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
 
 # If no input is provided, provide help and exit
-if [ $# -lt 2 ]; then
-	# Assign script name
-	script_name=${0##*/}
-	script_name=${script_name%.*}
+if [ $# -lt 4 ]; then
 
 	# Help statement
 	printf "${script_name}: subsamples all FastX files in specified folder to desired read number/fraction. E.g., for titration in metagenomic assembly or rarefaction of FastA files.\n"
