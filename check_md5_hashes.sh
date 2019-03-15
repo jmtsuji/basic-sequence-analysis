@@ -1,31 +1,63 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# MD5 hash checker for all fastq.gz files in a folder
-# Works for metagenomes from TCAG.
-# Jackson M. Tsuji (Neufeld Research Group), 2018
+# seq_name_simplify.sh
+# Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
+# Description: MD5 hash checker for all fastq.gz files in a folder (must have a corresponding MD5 hash with same name but .md5 appended)
 
+# Startup processes
+VERSION=$(basic-sequence-analysis-version)
+script_name=${0##*/}
+script_name=${script_name%.*}
+
+# If no input is provided, provide help and exit
+if [ $# -lt 1 ]; then
+
+	# Help statement
+	printf "${script_name}: MD5 hash checker for all fastq.gz files in a folder.\n"
+	printf "Version: ${VERSION}\n"
+	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+	printf "Dependencies: seqtk\n\n"
+	printf "Usage: ${0##*/} input_directory | tee hash_check.tsv\n\n"
+	printf "Usage details:\n"
+	printf "   - Searches for all files with extension .fastq.gz and then performs an MD5 hash. Tests against .fastq.gz.md5 files that must already be in the same folder.\n"
+	printf "   - Will look in all subdirectories of the input folder for FastQ files\n\n"
+
+	# Exit
+	exit 1
+fi
+
+# Get user input
 work_directory=$1
-# E.g., /Winnebago/Data/sthijs/HiSeq_data/ENG6210/180514_D00124_0548_AHGN3CBCX2
 
 # Find the FastQ files
-fastq_files=($(find ${work_directory} -name "*.fastq.gz"))
+fastq_files=($(find ${work_directory} -iname "*.fastq.gz" | sort -h))
 cd ${work_directory}
 
 # Make the header for the tab-separated file.
 printf "Filename\tMD5_match_status\n"
 
+# Check MD5 hashes
 for file in ${fastq_files[@]}; do
-	# Get the name of the file without the directory in front, to be compatible with TCAG naming
+	# Get the base name of the file
 	file_base=${file##*/}
 
-	# Calculate the MD5 hash
-	md5sum ${file_base} > ${file_base}_neufeldserver.md5
+	# TODO - check if the required existing MD5 hash is present!!
 
-	# Compare to the existing MD5 hash from TCAG in the folder. Print tab-separated for nice output for the user.
-	if [ $(cmp ${file_base}_neufeldserver.md5 ${file_base}.md5 >/dev/null; echo $?) = 0 ]; then
-	   printf "${file_base}\tOkay\n"
+	# Calculate the MD5 hash
+	md5_hash_new=$(cat ${file} | md5sum)
+
+	# Get the existing MD5 hash
+	md5_hash_old=$(cut -d ' ' -f 1 ${file.md5})
+
+	# Compare the hashes
+	if [ ${md5_hash_new} = ${md5_hash_old} ]; then
+	   printf "${file_base}\tpassed\n"
 	else
-	   printf "${file_base}\tNot_okay\n"
+	   printf "${file_base}\tFAILED\n"
 	fi
 done
+
+# TODO - give an overall report of number passed/failed.
+
