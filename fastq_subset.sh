@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# fasta_dealign.sh
+# fastq_subset.sh
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: subsamples all FastX in specified folder to desired read number/fraction.
 
