@@ -1,77 +1,68 @@
-#!/bin/bash
-# Created Jan 18, 2017, by Jackson Tsuji (Neufeld lab PhD student)
-# Description: builds Hidden Markov Models (HMMs) from unaligned protein sequence input files (FastA format)
-#               Run this script within the folder that contains the protein files. Will run for all FastA files.
-# Last updated: March 28, 2017
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Basic script stuff (from Vince Buffalo's "Bioinformatics Data Skills" (1st Ed.) chapter 12, pg 397):
-set -e
-set -u
-set -o pipefail
+# fasta_dealign.sh
+# Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
+# Description: subsamples all samples in specified folder to desired read number/fraction.
 
-script_version=1.0.0
-date_code=$(date '+%y%m%d')
+VERSION=$(basic-sequence-analysis-version)
 
-# If input field is empty, print help and end script
-if [ $# == 0 ]
-then
-printf "    $(basename $0) version ${script_version}: subsamples all samples in specified folder to desired read number/fraction. Saves output to current directory. \n    Contact Jackson Tsuji (jackson.tsuji@uwaterloo.ca; Neufeld research group) for error reports or feature requests.\n\n    Usage: $(basename $0) path/to/files subset_size SEED 2>&1 | tee $(basename $0 .sh).log \n\n    ***Requirements:\n        Input metagenome files should be in gzipped FastQ format, i.e. with .fastq.gz extension, and not be in subfolders.\n\n    Note that your output will be saved to the folder where you run this script.\n\n"
-exit 1
+# If no input is provided, provide help and exit
+if [ $# -lt 2 ]; then
+	# Assign script name
+	script_name=${0##*/}
+	script_name=${script_name%.*}
+
+	# Help statement
+	printf "${script_name}: subsamples all samples in specified folder to desired read number/fraction.\n"
+	printf "Version: ${VERSION}\n"
+	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+	printf "Dependencies: seqtk\n\n"
+	printf "Usage: ${0##*/} input_directory output_directory subset_size seed 2>&1 | tee $(basename $0 .sh).log\n\n"
+	printf "Usage details:\n"
+	printf "   - Input FastQ files can be gzipped or unzipped. Will be saved as gzipped.\n"
+	printf "   - input_directory: Files in subfolders will not be subsetted.\n"
+	printf "   - output_directory: Will be created if it does not already exist. If it does exist, any files with same names will be OVERWRITTEN!\n"
+	printf "   - subset_size: Number of sequences of proportion of sequences to keep.\n"
+	printf "   - seed: Random seed for the subset algorithm.\n\n"
+
+	# Exit
+	exit 1
 fi
-# Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
-# Test for empty variable: Bioinformatics Data Skills Ch. 12 pg 403-404, and http://www.tldp.org/LDP/Bash-Beginners-Guide/html/sect_09_07.html and http://stackoverflow.com/a/2428006 (both accessed Feb 21, 2017)
 
-start_time=$(date)
-
-#################################################################
-##### Settings: #################################################
-out_dir=$(pwd) # means you have to run the script in this folder.
-files_location=$1
-subset_size=$2
+# Receive user input
+input_dir=$1
+output_dir=$2
+subset_size=$3
 seed=$3
 #################################################################
 
-echo "Running $(basename $0), version $script_version."
-echo "Will subset sequences from all gzipped FastQ files in the current directory. Will use same specified SEED setting for each so that the same subset will be taken for paired-end files."
-echo ""
+(>&2 echo "[ $(date -u) ]: Running ${0##*/}")
+(>&2 echo "[ $(date -u) ]: Command: ${0##*/} ${@}")
+(>&2 echo "[ $(date -u) ]: input_dir: ${input_dir}")
+(>&2 echo "[ $(date -u) ]: output_dir: ${output_dir}")
+(>&2 echo "[ $(date -u) ]: subset_size: ${output_dir}")
+(>&2 echo "[ $(date -u) ]: seed: ${output_dir}")
 
-cd $out_dir
+mkdir -p ${output_dir}
 
-# Make output sub-directory
-mkdir -p "head"
+# Find FastQ files
+fastq_files=($(find ${input_dir} -maxdepth 1 -iname "*.fastq.gz" -o -iname "*.fastq" -type f | sort -h))
+(>&2 echo "[ $(date -u) ]: Identified ${#fastq_files[@]} FastQ files")
+(>&2 echo "[ $(date -u) ]: Subsetting files")
 
-cd $files_location
+# Subsample
+for fastq_file in ${fastq_files[@]}; do
+	# Get simplified sequence name (for either gzipped or unzipped)
+	filename_base=${fastq_file%.fastq.gz}
+	filename_base=${filename_base%.fastq}
+	filename_base=${filename_base##*/}
 
-# Get list of gzipped FastQ files in current directory (store as an array for looping)
-# Note: name will be stored without extension (suffix) for simplicity later on
-filename_base=($(find -maxdepth 1 -name "*.fastq.gz" -type f -exec basename {} .fastq.gz \;))
-# Got help from http://stackoverflow.com/questions/2961673/find-missing-argument-to-exec, post by Marian on June 2, 2010; accessed May 13, 2016
-echo "Identified ${#filename_base[@]} gzipped FastQ files."
-echo ""
+	(>&2 echo "[ $(date -u) ]: ${filename_base##*/}")
+	seqtk sample -s ${seed} ${fastq_file} ${subset_size} | gzip > ${output_dir}/${filename_base}.fastq.gz
 
-cd $out_dir
-
-# Subsetting sequence files
-echo "Subsetting ${subset_size} sequences from each file using seqtk $(seqtk 2>&1 | head -n 3 | tail -n 1) with SEED value of ${seed}"
-echo ""
-
-echo "Subsetting files:"
-
-for name in ${filename_base[@]}
-do
-    echo "${name}.fastq.gz"
-    seqtk sample -2 -s ${seed} "${files_location}/${name}.fastq.gz" ${subset_size} > "${name}_subset.fastq"
-    head -n 16 "${name}_subset.fastq" > head/"${name}_subset_head.txt"
-    gzip "${name}_subset.fastq"
 done
-# "for" loop idea from Bioinformatics Data Skills (Vince Buffalo), Ch. 12
 
-echo ""
-echo ""
-echo ""
+(>&2 echo "[ $(date -u) ]: ${script_name}: finished.")
 
-end_time=$(date)
-
-echo "$(basename $0): finished. Output can be fount in ${out_dir}."
-echo "Started at ${start_time} and finished at ${end_time}."
-echo ""
