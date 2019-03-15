@@ -1,30 +1,32 @@
-#!/bin/bash
-# fasta_U_T_swap.sh
-# Copyright Jackson M. Tsuji, 2017
-# Neufeld lab, University of Waterloo, Canada
-# Created Nov. 18, 2017
+#!/usr/bin/env bash
+set -euo pipefail
+
+# fasta_dealign.sh
+# Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: Switches between DNA and RNA (U's and T's)
 
-# Sources:
-#   General awk help: http://www.grymoire.com/Unix/Awk.html#uh-0 (May 13, 2015, and June 1, 2015)
-#   Based off code sent to me by Michael Hall on June 17, 2013 via email.
-#   Reporting via STDERR: https://stackoverflow.com/a/23550347, accessed 171118
-#   Receiving from STDIN: https://superuser.com/a/747905 (accessed Nov. 18, 2017)
+VERSION=$(basic-sequence-analysis-version)
 
-# Basic script stuff (from Vince Buffalo's "Bioinformatics Data Skills" (1st Ed.) chapter 12, pg 397):
-set -e
-set -u
-set -o pipefail
+# If no input is provided, provide help and exit
+if [ $# -lt 2 ]; then
+	# Assign script name
+	script_name=${0##*/}
+	script_name=${script_name%.*}
 
-script_version=1.2.0
+	# Help statement
+	printf "${script_name}: swaps between U's and T's in FastA file (DNA <--> RNA).\n"
+	printf "Version: ${VERSION}\n"
+	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
+	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+	printf "Dependencies: seqtk\n\n"
+	printf "Usage: ${0##*/} [U_to_T | T_to_U] input.fasta > output.fasta\n\n"
+	printf "Usage details:\n"
+	printf "   - All this script does is swap capital AND lowercase U's/T's in sequences (non-header) sections. Does not do anything to ambiguous bases.\n"
+	printf "   - To receive from STDIN use '-' as the input.fasta entry\n\n"
 
-# If input field is empty, give error message and end script
-if [ $# == 0 ]; then
-    printf "$(basename $0): swaps between U's and T's in FastA file (DNA <--> RNA).\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n\nUsage: $(basename $0) [U_to_T | T_to_U] input.fasta > output.fasta\n\n*Note: all this script does is swap capital AND lowercase U's/T's in sequences (non-header) sections. Does not do anything to ambiguous bases.\nTo receive from STDIN, run as $(basename $0) [U_to_T | T_to_U] - > output.fasta\n"
-    exit 1
+	# Exit
+	exit 1
 fi
-# Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
-# Test for empty variable: Bioinformatics Data Skills Ch. 12 pg 403-404, and http://www.tldp.org/LDP/Bash-Beginners-Guide/html/sect_09_07.html and http://stackoverflow.com/a/2428006 (both accessed Feb 21, 2017)
 
 # Read in desired conversion direction
 direction=$1
