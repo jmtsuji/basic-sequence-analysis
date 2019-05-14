@@ -92,11 +92,11 @@ cd /tmp
 wget https://github.com/jmtsuji/basic-sequence-analysis/archive/v${basic_sequence_analysis_version}.tar.gz
 tar -xzf v${basic_sequence_analysis_version}.tar.gz
 rm v${basic_sequence_analysis_version}.tar.gz
-cd basic-sequence-analysis-v${basic_sequence_analysis_version}
+cd basic-sequence-analysis-${basic_sequence_analysis_version}
 conda activate gtotree # Note that 'gtotree_${GToTree_version}' is needed is you used the advance install method
 cp phylogeny_builder_whole_genome.sh basic-sequence-analysis-version ${CONDA_PREFIX}/bin
 cd ..
-rm -rf basic-sequence-analysis-v${basic_sequence_analysis_version}
+rm -rf basic-sequence-analysis-${basic_sequence_analysis_version}
 ```
 
 ## Setup before running the genome script
