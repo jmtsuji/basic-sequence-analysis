@@ -41,9 +41,7 @@ awk '{ if ($0 !~ /^>/) { \
         gsub(/-|\./, ""); \
     } \
 print \
-} \
-' \
-$input
+} '
 
 # will output to STDOUT
 
