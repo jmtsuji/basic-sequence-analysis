@@ -21,7 +21,7 @@ if [ $# -lt 2 ]; then
 	printf "Installation: GToTree must be installed for this script to run. Designed for version 1.1.10. See the tutorial file for installation.\n\n"
 	printf "Usage: ${0##*/} [OPTIONS] input_genome_directory output_directory 2>&1 | tee ${script_name}.log\n\n"
 	printf "Positional arguments:\n"
-	printf "   1. input_genome_directory: Path to the directory containing unzipped FastA nucleotide files for all genomes to be run. FastA files MUST have the extensions '*.fna' to be run!!\n"
+	printf "   1. input_genome_directory: Path to the directory containing FastA files for all genomes to be run. These can either be nucleotide files (with extension .fna or .fna.gz) or amino acid files (with extension .faa or .faa.gz) or a mix of both, one genome per file. Avoid special characters in filenames.\n"
 	printf "   2. output_directory: Path to the directory where the genome phylogeny will be built. For safety, the script will not run if the directory already exists.\n\n"
 	printf "Options (optional):\n"
 	printf "   -@   threads: Number of parallel processors to use. (Default: 1)\n"
@@ -127,20 +127,21 @@ fi
 # Make output subdirectories
 mkdir -p ${output_dir}/phylogeny ${output_dir}/summary
 
-# Get genome list
-find ${genome_dir} -iname "*.fna" | sort -h > ${output_dir}/input_genomes.list # N.B., genomes must be unzipped fna files.
+# Get genome lists
+find ${genome_dir} -iname "*.fna" -o -iname "*.fna.gz" | sort -h > ${output_dir}/input_genomes_fna.list
+find ${genome_dir} -iname "*.faa" -o -iname "*.faa.gz" | sort -h > ${output_dir}/input_genomes_faa.list
 
-if [ $(find ${genome_dir} -iname "*.fna" | wc -l) = 0 ]; then
-	(>&2 echo "[ $(date -u) ]: ERROR: found no files with extension '*.fna' in folder '${genome_dir}'. Exiting...")
+if [ $(cat ${output_dir}/input_genomes_fna.list | wc -l) = 0 -a $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
+	(>&2 echo "[ $(date -u) ]: ERROR: found no files with extension '.fna', '.fna.gz', '.faa', or 'faa.gz' in folder '${genome_dir}'. Exiting...")
 	exit 1
 fi
 
-(>&2 echo "[ $(date -u) ]: detected $(find ${genome_dir} -iname "*.fna" | wc -l) genome files (extension '*fna') to run.")
+(>&2 echo "[ $(date -u) ]: detected $(cat ${output_dir}/input_genomes_fna.list | wc -l) nucleotide and $(cat ${output_dir}/input_genomes_faa.list | wc -l) amino acid genome files to run.")
 
 # Run GToTree
 (>&2 echo "[ $(date -u) ]: Running GToTree")
-(>&2 echo "[ $(date -u) ]: Command: GToTree -f ${output_dir}/input_genomes.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log")
-GToTree -f ${output_dir}/input_genomes.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log
+(>&2 echo "[ $(date -u) ]: Command: GToTree -f ${output_dir}/input_genomes_fna.list -A ${output_dir}/input_genomes_faa.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log")
+GToTree -f ${output_dir}/input_genomes_fna.list -A ${output_dir}/input_genomes_faa.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log
 (>&2 echo "[ $(date -u) ]: GToTree: finished. See log to confirm run details.")
 
 # Move log and genome list to the GToTree folder
