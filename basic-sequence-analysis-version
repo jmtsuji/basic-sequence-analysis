@@ -5,7 +5,7 @@ set -euo pipefail
 # Copyright Jackson M. Tsuji, 2019
 
 # TODO - find a more elegant way to set the version!
-VERSION=v1.2.0
+VERSION=v1.2.1
 
 echo ${VERSION}
 
