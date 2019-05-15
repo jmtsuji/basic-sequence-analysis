@@ -150,7 +150,7 @@ elif [ $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
 	(>&2 echo "[ $(date -u) ]: No amino acid files provided. Running with nucleotide files only.")
 	rm ${output_dir}/input_genomes_faa.list
 
-	(>&2 echo "[ $(date -u) ]: detected $(cat ${output_dir}/input_genomes_fna.list | wc -l) nucleotide genome files to run.")
+	(>&2 echo "[ $(date -u) ]: Detected $(cat ${output_dir}/input_genomes_fna.list | wc -l) nucleotide genome files to run.")
 
 	# Run GToTree
 	(>&2 echo "[ $(date -u) ]: Running GToTree")
@@ -159,7 +159,7 @@ elif [ $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
 
 else
 
-	(>&2 echo "[ $(date -u) ]: detected $(cat ${output_dir}/input_genomes_fna.list | wc -l) nucleotide and $(cat ${output_dir}/input_genomes_faa.list | wc -l) amino acid genome files to run.")
+	(>&2 echo "[ $(date -u) ]: Detected $(cat ${output_dir}/input_genomes_fna.list | wc -l) nucleotide and $(cat ${output_dir}/input_genomes_faa.list | wc -l) amino acid genome files to run.")
 
 	# Run GToTree
 	(>&2 echo "[ $(date -u) ]: Running GToTree")
@@ -170,7 +170,7 @@ fi
 
 (>&2 echo "[ $(date -u) ]: GToTree: finished. See log to confirm run details.")
 # Move log and genome list to the GToTree folder
-mv ${output_dir}/GToTree.log ${output_dir}/input_genomes.list ${output_dir}/alignment
+mv ${output_dir}/GToTree.log ${output_dir}/input_genomes*.list ${output_dir}/alignment
 
 # Re-make the phylogeny manually to use my preferred settings for IQ-TREE:
 input_alignment_filepath="${output_dir}/alignment/Aligned_SCGs.faa"
