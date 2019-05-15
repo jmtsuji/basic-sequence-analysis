@@ -87,13 +87,13 @@ gtt-clean-after-test.sh
 ### Install this repo's wrapper for GToTree
 ```
 basic_sequence_analysis_version="1.2.2"
+conda activate gtotree # Note that 'gtotree_${GToTree_version}' is needed is you used the advance install method
 
 cd /tmp
 wget https://github.com/jmtsuji/basic-sequence-analysis/archive/v${basic_sequence_analysis_version}.tar.gz
 tar -xzf v${basic_sequence_analysis_version}.tar.gz
 rm v${basic_sequence_analysis_version}.tar.gz
 cd basic-sequence-analysis-${basic_sequence_analysis_version}
-conda activate gtotree # Note that 'gtotree_${GToTree_version}' is needed is you used the advance install method
 cp phylogeny_builder_whole_genome.sh basic-sequence-analysis-version ${CONDA_PREFIX}/bin
 cd ..
 rm -rf basic-sequence-analysis-${basic_sequence_analysis_version}
