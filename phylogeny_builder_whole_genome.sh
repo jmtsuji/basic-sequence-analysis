@@ -135,7 +135,7 @@ find ${genome_dir} -iname "*.faa" -o -iname "*.faa.gz" | sort -h > ${output_dir}
 if [ $(cat ${output_dir}/input_genomes_fna.list | wc -l) = 0 -a $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
 	(>&2 echo "[ $(date -u) ]: ERROR: found no files with extension '.fna', '.fna.gz', '.faa', or 'faa.gz' in folder '${genome_dir}'. Exiting...")
 	exit 1
-elif [ $(cat ${output_dir}/input_genomes_fna.list | wc -l) = 0 ]
+elif [ $(cat ${output_dir}/input_genomes_fna.list | wc -l) = 0 ]; then
 	(>&2 echo "[ $(date -u) ]: No nucleotide files provided. Running with amino acid files only.")
 	rm ${output_dir}/input_genomes_fna.list
 
@@ -146,7 +146,7 @@ elif [ $(cat ${output_dir}/input_genomes_fna.list | wc -l) = 0 ]
 	(>&2 echo "[ $(date -u) ]: Command: GToTree -A ${output_dir}/input_genomes_faa.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log")
 	GToTree -A ${output_dir}/input_genomes_faa.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log
 
-elif [ $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]
+elif [ $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
 	(>&2 echo "[ $(date -u) ]: No amino acid files provided. Running with nucleotide files only.")
 	rm ${output_dir}/input_genomes_faa.list
 
