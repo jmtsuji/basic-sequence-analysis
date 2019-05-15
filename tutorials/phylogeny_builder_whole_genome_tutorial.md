@@ -86,7 +86,7 @@ gtt-clean-after-test.sh
 
 ### Install this repo's wrapper for GToTree
 ```
-basic_sequence_analysis_version="1.2.1"
+basic_sequence_analysis_version="1.2.2"
 
 cd /tmp
 wget https://github.com/jmtsuji/basic-sequence-analysis/archive/v${basic_sequence_analysis_version}.tar.gz
