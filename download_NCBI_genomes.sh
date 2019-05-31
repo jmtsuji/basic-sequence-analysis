@@ -88,7 +88,7 @@ mkdir -p "${output_directory}"
 printf "" > ${log_filepath}
 
 # Startup info
-(>&2 echo "[ $(date -u) ]: Running ${script_name}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: Running ${0##*/}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: Version: ${VERSION}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: Command: ${0##*/} ${original_arguments}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: #### SETTINGS ####") 2>&1 | tee -a ${log_filepath}
@@ -157,7 +157,7 @@ for query in ${queries[@]}; do
 
 		# Add entry to table
         (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')") 2>&1 | tee -a ${log_filepath}
-		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}" >> ${output_table_filepath}
+		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}\n" >> ${output_table_filepath}
  
 		## Notes - Using the RefSeq FTP
 		# E.g., if URL is: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1
@@ -193,4 +193,4 @@ for query in ${queries[@]}; do
 
 done
 
-(>&2 echo "[ $(date -u) ]: ${script_name}: Finished.") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: ${0##*/}: Finished.") 2>&1 | tee -a ${log_filepath}
