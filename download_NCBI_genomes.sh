@@ -123,34 +123,62 @@ for query in ${queries[@]}; do
     	continue # Doesn't finish the loop
 	fi
 	
-	# Parse important info out of the results page
-	# TODO - will NOT WORK PROPERLY if any of the results are missing any of these entries!!
-	organism=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element Organism))
-	species=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element SpeciesName))
-	accession=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyAccession))
-	assembly_name=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyName))
-	genbank_ftp_base=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element FtpPath_GenBank))
-	rm "${output_directory}/query_hit.tmp"
-
-	(>&2 printf ": Found ${#organism[@]} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
-	# TODO - confirm that the # of entries for each pulled element above are the same
-
-	# Now download the sequences
-	for i in $(seq 1 ${#organism[@]}); do
-
-		# Set counter to zero-ordered
+	## Separate by hit
+	# Whole file starts with:
+	# <?xml version="1.0" encoding="UTF-8" ?>
+	# <!DOCTYPE DocumentSummarySet PUBLIC "-//NLM//DTD esummary assembly 20180216//EN" "https://eutils.ncbi.nlm.nih.gov/eutils/dtd/20180216/esummary_assembly.dtd">
+	# 
+	# <DocumentSummarySet status="OK">
+	# and ends with:
+	# </DocumentSummarySet>
+	#
+	
+	# So take off these chunks
+	tail -n +5 ${output_directory}/query_hit.tmp | head -n -2 > ${output_directory}/query_hit.tmp.trunc
+	# TODO - is it always this exact number of lines?
+	
+	# Each document starts with <DocumentSummary> and ends with </DocumentSummary>
+	# First, figure out where each file starts
+	file_start_lines=($(grep -n "<DocumentSummary>" ${output_directory}/query_hit.tmp.trunc | cut -d ":" -f 1))
+	number_of_hits=${#file_start_lines[@]}
+	# Also figure out the last line of the file (and add one so that it looks like another starting line)
+	last_line=$(cat ${output_directory}/query_hit.tmp.trunc | wc -l)
+	last_line=$((${last_line}+1))
+	# Put together into the same array
+	file_start_lines=($(echo ${file_start_lines[@]} | tr ' ' $'\n' && echo ${last_line}))
+	
+	# Now separate the file
+	for i in $(seq 1 $((${#file_start_lines[@]}-1))); do
 		j=$((${i}-1))
+		k=${i}
+		file_start_line=${file_start_lines[${j}]}
+		file_end_line=$((${file_start_lines[${k}]}-1)) # The start line of the next entry, minus 1
+		file_length=$((${file_end_line}-${file_start_line}+1))
+		head -n ${file_end_line} ${output_directory}/query_hit.tmp.trunc | tail -n ${file_length} > ${output_directory}/query_hit.tmp.${i}
+	done
+	rm "${output_directory}/query_hit.tmp" "${output_directory}/query_hit.tmp.trunc"
+	
+	(>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
 
-		# Get variables
-		organism_single=${organism[${j}]}
-		species_single=${species[${j}]}
-		accession_single=${accession[${j}]}
-		assembly_name_single=${assembly_name[${j}]}
-		genbank_ftp_base_single=${genbank_ftp_base[${j}]}
+	# Now extract the data and download the sequences
+	for i in $(seq 1 ${number_of_hits}; do
+
+		# Make alternative zero-ordered counter
+		j=$((${i}-1))
+		
+		query_file="${output_directory}/query_hit.tmp.${i}"
+
+		# Parse important info out of the results page
+		organism=($(cat ${query_file} | xtract -pattern DocumentSummary -element Organism))
+		species=($(cat ${query_file} | xtract -pattern DocumentSummary -element SpeciesName))
+		accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element AssemblyAccession))
+		assembly_name=($(cat ${query_file} | xtract -pattern DocumentSummary -element AssemblyName))
+		genbank_ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
+		rm ${query_file}
 
 		# Add entry to table
-        (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')") 2>&1 | tee -a ${log_filepath}
-		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}\n" >> ${output_table_filepath}
+        (>&2 printf "[ $(date -u) ]: '${accession}' ('${organism}')") 2>&1 | tee -a ${log_filepath}
+		printf "${query}\t${organism}\t${species}\t${accession}\t${assembly_name}\t${genbank_ftp_base}\n" >> ${output_table_filepath}
  
 		## Notes - Using the RefSeq FTP
 		# E.g., if URL is: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1
@@ -164,8 +192,8 @@ for query in ${queries[@]}; do
 
         if [ ${info_only} = "False" ]; then
 			# Make a nice output filename
-			species_cleaned=$(echo ${species_single} | sed "s/ \+/_/g" | sed "s/[[:punct:]]\+/_/g") # Replace odd punctuation with underscores
-            outfile_name="${species_cleaned}__${accession_single}"
+			species_cleaned=$(echo ${species} | sed "s/ \+/_/g" | sed "s/[[:punct:]]\+/_/g") # Replace odd punctuation with underscores
+            outfile_name="${species_cleaned}__${accession}"
 			outfile_path="${output_directory}/${outfile_name}"
 
 			# Download
