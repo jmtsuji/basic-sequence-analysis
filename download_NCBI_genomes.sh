@@ -88,15 +88,15 @@ mkdir -p "${output_directory}"
 printf "" > ${log_filepath}
 
 # Startup info
-(>&2 echo "[ $(date -u) ]: Running ${script_name}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: Version: ${VERSION}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: Command: ${0##*/} ${original_arguments}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: #### SETTINGS ####" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: input_filepath: ${input_filepath}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: output_directory: ${output_directory}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: force_override: ${force_override}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: info_only: ${info_only}" 2>&1 | tee -a ${log_filepath})
-(>&2 echo "[ $(date -u) ]: ##################" 2>&1 | tee -a ${log_filepath})
+(>&2 echo "[ $(date -u) ]: Running ${script_name}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: Version: ${VERSION}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: Command: ${0##*/} ${original_arguments}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: #### SETTINGS ####") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: input_filepath: ${input_filepath}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: output_directory: ${output_directory}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: force_override: ${force_override}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: info_only: ${info_only}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: ##################") 2>&1 | tee -a ${log_filepath}
 
 # Load queries from input file
 # But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
@@ -105,7 +105,7 @@ IFS=$'\n' # Only separate between queries when hitting a line space
 queries=($(cut -d $'\t' -f 1 ${input_filepath}))
 IFS=${IFS_backup}
 
-(>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search" 2>&1 | tee -a ${log_filepath})
+(>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search") 2>&1 | tee -a ${log_filepath}
 
 # Initialize information table
 printf "query\torganism\tspecies\tassembly_accession\tassembly_name\tgenbank_ftp_link\n" > ${output_table_filepath}
@@ -114,12 +114,12 @@ for query in ${queries[@]}; do
 
 	# Search for the assembly document summary for the organism(s) matching the query.
 	# NOTE: if there are multiple assemblies that match the search, will get multiple documents' worth of data.	
-	(>&2 echo "[ $(date -u) ]: Searching for '${query}'" 2>&1 | tee -a ${log_filepath})
+	(>&2 echo "[ $(date -u) ]: Searching for '${query}'") 2>&1 | tee -a ${log_filepath}
 	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/query_hit.tmp"
 		
 	# Will be empty if the search failed
 	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) = 1 ]; then
-	    (>&2 echo "[ $(date -u) ]: Found no search hits to '${query}'" 2>&1 | tee -a ${log_filepath})
+	    (>&2 echo "[ $(date -u) ]: Found no search hits to '${query}'") 2>&1 | tee -a ${log_filepath}
     	continue # Doesn't finish the loop
 	fi
 	
@@ -135,7 +135,7 @@ for query in ${queries[@]}; do
 	IFS=${IFS_backup}
 	rm "${output_directory}/query_hit.tmp"
 
-	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies" 2>&1 | tee -a ${log_filepath})
+	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies") 2>&1 | tee -a ${log_filepath}
 	# TODO - confirm that the # of entries for each pulled element above are the same
 
 	# Now download the sequences
@@ -156,7 +156,7 @@ for query in ${queries[@]}; do
     	IFS=${IFS_backup}
 
 		# Add entry to table
-        (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')" 2>&1 | tee -a ${log_filepath})
+        (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')") 2>&1 | tee -a ${log_filepath}
 		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}" >> ${output_table_filepath}
  
 		## Notes - Using the RefSeq FTP
@@ -177,7 +177,7 @@ for query in ${queries[@]}; do
 
 			# Download
 			# TODO - set way to only download some of these files if desired
-    		(>&2 printf ": Downloading as '${outfile_name}' from '${genbank_ftp_base_single}'\n" 2>&1 | tee -a ${log_filepath})
+    		(>&2 printf ": Downloading as '${outfile_name}' from '${genbank_ftp_base_single}'\n") 2>&1 | tee -a ${log_filepath}
 			genbank_prefix=${genbank_ftp_base##*/}
 			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.fna.gz > ${outfile_path}.fna.gz
 			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_cds_from_genomic.fna.gz > ${outfile_path}.ffn.gz
@@ -186,11 +186,11 @@ for query in ${queries[@]}; do
 			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.gff.gz > ${outfile_path}.gff.gz
 			
 		else
-		    (>&2 printf "\n" 2>&1 | tee -a ${log_filepath}) # Finish the log statement
+		    (>&2 printf "\n") 2>&1 | tee -a ${log_filepath} # Finish the log statement
 		fi
 
 	done
 
 done
 
-(>&2 echo "[ $(date -u) ]: ${script_name}: Finished." 2>&1 | tee -a ${log_filepath})
+(>&2 echo "[ $(date -u) ]: ${script_name}: Finished.") 2>&1 | tee -a ${log_filepath}
