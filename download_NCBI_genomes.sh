@@ -108,7 +108,7 @@ queries=($(cut -d $'\t' -f 1 ${input_filepath}))
 (>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search") 2>&1 | tee -a ${log_filepath}
 
 # Initialize information table
-printf "query\torganism\tspecies\tassembly_accession\tassembly_name\tgenbank_ftp_link\n" > ${output_table_filepath}
+printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tgenbank_ftp_link\n" > ${output_table_filepath}
 
 for query in ${queries[@]}; do
 
@@ -126,6 +126,7 @@ for query in ${queries[@]}; do
 	# Parse important info out of the results page
 	organism=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element Organism))
 	species=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element SpeciesName))
+	isolate=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element Isolate))
 	accession=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyAccession))
 	assembly_name=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyName))
 	genbank_ftp_base=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element FtpPath_GenBank))
@@ -143,13 +144,14 @@ for query in ${queries[@]}; do
 		# Get variables
 		organism_single=${organism[${j}]}
 		species_single=${species[${j}]}
+		isolate_single=${isolate[${j}]}
 		accession_single=${accession[${j}]}
 		assembly_name_single=${assembly_name[${j}]}
 		genbank_ftp_base_single=${genbank_ftp_base[${j}]}
 
 		# Add entry to table
         (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')") 2>&1 | tee -a ${log_filepath}
-		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}\n" >> ${output_table_filepath}
+		printf "${query}\t${organism_single}\t${species_single}\t${isolate_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}\n" >> ${output_table_filepath}
  
 		## Notes - Using the RefSeq FTP
 		# E.g., if URL is: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1
