@@ -124,11 +124,15 @@ for query in ${queries[@]}; do
 	fi
 	
 	# Parse important info out of the results page
+	# But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
+    IFS_backup=${IFS}
+    IFS="\n" # Only separate between queries when hitting a line space
 	organism=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element Organism))
 	species=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element SpeciesName))
 	accession=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element AssemblyAccession))
 	assembly_name=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element AssemblyName))
 	genbank_ftp_base=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
+	IFS=${IFS_backup}
 
 	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies" | tee -a ${log_filepath})
 	# TODO - confirm that the # of entries for each pulled element above are the same
@@ -140,11 +144,15 @@ for query in ${queries[@]}; do
 		j=$((${i}-1))
 
 		# Get variables
+	    # But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
+        IFS_backup=${IFS}
+        IFS="\n" # Only separate between queries when hitting a line space
 		organism_single=${organism[${j}]}
 		species_single=${species[${j}]}
 		accession_single=${accession[${j}]}
 		assembly_name_single=${assembly_name[${j}]}
 		genbank_ftp_base_single=${genbank_ftp_base[${j}]}
+    	IFS=${IFS_backup}
 
 		# Add entry to table
         (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')" | tee -a ${log_filepath})
@@ -160,7 +168,7 @@ for query in ${queries[@]}; do
 		# RNA genes: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1/GCF_000168715.1_ASM16871v1_rna_from_genomic.fna.gz
 		# Genome Flat File (GFF): ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1/GCF_000168715.1_ASM16871v1_genomic.gff.gz
 
-        if [ ${info_only} != "False" ]; then
+        if [ ${info_only} = "False" ]; then
 			# Make a nice output filename
 			species_cleaned=$(echo ${species_single} | sed "s/ \+/_/g" | sed "s/[[:punct:]]\+/_/g") # Replace odd punctuation with underscores
 			outfile_name="${species_cleaned}__${accession_single}"
