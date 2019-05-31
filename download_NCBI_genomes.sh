@@ -161,7 +161,7 @@ for query in ${queries[@]}; do
 	(>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
 
 	# Now extract the data and download the sequences
-	for i in $(seq 1 ${number_of_hits}; do
+	for i in $(seq 1 ${number_of_hits}); do
 
 		# Make alternative zero-ordered counter
 		j=$((${i}-1))
