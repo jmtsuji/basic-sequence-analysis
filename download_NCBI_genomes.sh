@@ -98,12 +98,12 @@ printf "" > ${log_filepath}
 (>&2 echo "[ $(date -u) ]: info_only: ${info_only}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: ##################") 2>&1 | tee -a ${log_filepath}
 
-# Load queries from input file
-# But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
+# NOTE: For the search, temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries and results
 IFS_backup=${IFS}
 IFS=$'\n' # Only separate between queries when hitting a line space
+
+# Load queries from input file
 queries=($(cut -d $'\t' -f 1 ${input_filepath}))
-IFS=${IFS_backup}
 
 (>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search") 2>&1 | tee -a ${log_filepath}
 
@@ -124,15 +124,11 @@ for query in ${queries[@]}; do
 	fi
 	
 	# Parse important info out of the results page
-	# But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
-    IFS_backup=${IFS}
-    IFS=$'\n' # Only separate between queries when hitting a line space
 	organism=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element Organism))
 	species=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element SpeciesName))
 	accession=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyAccession))
 	assembly_name=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyName))
 	genbank_ftp_base=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element FtpPath_GenBank))
-	IFS=${IFS_backup}
 	rm "${output_directory}/query_hit.tmp"
 
 	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies") 2>&1 | tee -a ${log_filepath}
@@ -145,15 +141,11 @@ for query in ${queries[@]}; do
 		j=$((${i}-1))
 
 		# Get variables
-	    # But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
-        IFS_backup=${IFS}
-        IFS=$'\n' # Only separate between queries when hitting a line space
 		organism_single=${organism[${j}]}
 		species_single=${species[${j}]}
 		accession_single=${accession[${j}]}
 		assembly_name_single=${assembly_name[${j}]}
 		genbank_ftp_base_single=${genbank_ftp_base[${j}]}
-    	IFS=${IFS_backup}
 
 		# Add entry to table
         (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')") 2>&1 | tee -a ${log_filepath}
@@ -192,5 +184,8 @@ for query in ${queries[@]}; do
 	done
 
 done
+
+# Restore the old IFS
+IFS=${IFS_backup}
 
 (>&2 echo "[ $(date -u) ]: ${0##*/}: Finished.") 2>&1 | tee -a ${log_filepath}
