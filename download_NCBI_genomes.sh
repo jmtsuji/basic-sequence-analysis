@@ -198,7 +198,7 @@ for query in ${queries[@]}; do
 
 			# Download
 			# TODO - set way to only download some of these files if desired
-    		(>&2 printf ": Downloading as '${outfile_name}' from '${genbank_ftp_base_single}'\n") 2>&1 | tee -a ${log_filepath}
+    		(>&2 printf ": Downloading as '${outfile_name}' from '${genbank_ftp_base}'\n") 2>&1 | tee -a ${log_filepath}
 			genbank_prefix=${genbank_ftp_base##*/}
 			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.fna.gz > ${outfile_path}.fna.gz
 			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_cds_from_genomic.fna.gz > ${outfile_path}.ffn.gz
