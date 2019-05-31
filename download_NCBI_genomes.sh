@@ -71,11 +71,20 @@ if [ ${info_only} != "True" -a ${info_only} != "False" ]; then
     exit 1
 fi
 
+# Check if the output directory exists
+if [ ${force_override} = "False" ]; then
+	if [ -d ${output_directory} ]; then
+		(>&2 echo "[ $(date -u) ]: ERROR: output_directory '${output_directory}' already exists. Please delete it before running this script, or set force_override to 'True'. Exiting...")
+		exit 1
+	fi
+fi
+
 # Set script-determined variables
 output_table_filepath="${output_directory}/genome_info.tsv"
 log_filepath="${output_directory}/genome_info.log"
 
 # Initialize logfile
+mkdir -p "${output_directory}"
 printf "" > ${log_filepath}
 
 # Startup info
@@ -88,14 +97,6 @@ printf "" > ${log_filepath}
 (>&2 echo "[ $(date -u) ]: force_override: ${force_override}" | tee -a ${log_filepath})
 (>&2 echo "[ $(date -u) ]: info_only: ${info_only}" | tee -a ${log_filepath})
 (>&2 echo "[ $(date -u) ]: ##################" | tee -a ${log_filepath})
-
-# Check if the output directory exists
-if [ ${force_override} = "False" ]; then
-	if [ -d ${output_directory} ]; then
-		(>&2 echo "[ $(date -u) ]: ERROR: output_directory '${output_directory}' already exists. Please delete it before running this script, or set force_override to 'True'. Exiting...")
-		exit 1
-	fi
-fi
 
 # Load queries from input file
 # But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
