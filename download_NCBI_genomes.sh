@@ -130,11 +130,11 @@ for query in ${queries[@]}; do
 	assembly_name=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element AssemblyName))
 	genbank_ftp_base=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
 
-	(>&2 echo "[ (date -u) ]: Found ${#organism[@]} matching assemblies" | tee -a ${log_filepath})
+	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies" | tee -a ${log_filepath})
 	# TODO - confirm that the # of entries for each pulled element above are the same
 
 	# Now download the sequences
-	for assembly in $(seq 1 ${#organism[@]}); do
+	for i in $(seq 1 ${#organism[@]}); do
 
 		# Set counter to zero-ordered
 		j=$((${i}-1))
