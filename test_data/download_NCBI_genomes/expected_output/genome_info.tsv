@@ -1,0 +1,6 @@
+query	organism	species	assembly_accession	assembly_name	genbank_ftp_link
+Chlorobium ferrooxidans	Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)	Chlorobium ferrooxidans	GCF_000168715.1	ASM16871v1	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/168/715/GCA_000168715.1_ASM16871v1
+Chlorobium sp. KB01	Chlorobium sp. KB01 (green sulfur bacteria)	Chlorobium sp. KB01	GCF_001975465.1	ASM197546v1	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/001/975/465/GCA_001975465.1_ASM197546v1
+GCF_000168715.1	Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)	Chlorobium ferrooxidans	GCF_000168715.1	ASM16871v1	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/168/715/GCA_000168715.1_ASM16871v1
+PRJNA534305	Chlorobium sp. (green sulfur bacteria)	Chlorobium sp.	GCA_005862285.1	ASM586228v1	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/005/862/285/GCA_005862285.1_ASM586228v1
+PRJNA534305	Chlorobium sp. (green sulfur bacteria)	Chlorobium sp.	GCA_005862225.1	ASM586222v1	ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/005/862/225/GCA_005862225.1_ASM586222v1

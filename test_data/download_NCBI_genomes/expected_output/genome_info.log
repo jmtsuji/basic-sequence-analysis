@@ -1,0 +1,21 @@
+[ Fri May 31 22:50:47 UTC 2019 ]: Running download_NCBI_genomes.sh
+[ Fri May 31 22:50:47 UTC 2019 ]: Version: v1.3.0
+[ Fri May 31 22:50:47 UTC 2019 ]: Command: download_NCBI_genomes.sh -i True test_input.list test_output 2
+[ Fri May 31 22:50:47 UTC 2019 ]: #### SETTINGS ####
+[ Fri May 31 22:50:47 UTC 2019 ]: input_filepath: test_input.list
+[ Fri May 31 22:50:47 UTC 2019 ]: output_directory: test_output
+[ Fri May 31 22:50:47 UTC 2019 ]: force_override: False
+[ Fri May 31 22:50:47 UTC 2019 ]: info_only: True
+[ Fri May 31 22:50:47 UTC 2019 ]: ##################
+[ Fri May 31 22:50:47 UTC 2019 ]: Found '5' queries to search
+[ Fri May 31 22:50:47 UTC 2019 ]: Searching for 'Chlorobium ferrooxidans': Found 1 matching assemblies
+[ Fri May 31 22:50:49 UTC 2019 ]: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)')
+[ Fri May 31 22:50:49 UTC 2019 ]: Searching for 'Chlorobium sp. KB01': Found 1 matching assemblies
+[ Fri May 31 22:50:50 UTC 2019 ]: 'GCF_001975465.1' ('Chlorobium sp. KB01 (green sulfur bacteria)')
+[ Fri May 31 22:50:50 UTC 2019 ]: Searching for 'GCF_000168715.1': Found 1 matching assemblies
+[ Fri May 31 22:50:52 UTC 2019 ]: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)')
+[ Fri May 31 22:50:52 UTC 2019 ]: Searching for 'PRJNA534305': Found 2 matching assemblies
+[ Fri May 31 22:50:53 UTC 2019 ]: 'GCA_005862285.1' ('Chlorobium sp. (green sulfur bacteria)')
+[ Fri May 31 22:50:53 UTC 2019 ]: 'GCA_005862225.1' ('Chlorobium sp. (green sulfur bacteria)')
+[ Fri May 31 22:50:53 UTC 2019 ]: Searching for 'Random text': Found 0 matching assemblies
+[ Fri May 31 22:50:54 UTC 2019 ]: download_NCBI_genomes.sh: Finished.
