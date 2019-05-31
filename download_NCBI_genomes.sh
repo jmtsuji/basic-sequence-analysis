@@ -118,7 +118,7 @@ for query in ${queries[@]}; do
 	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/query_hit.tmp"
 		
 	# Will be empty if the search failed
-	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) = 1 ]; then
+	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) -lt 2 ]; then
 	    (>&2 printf ": Found no search hits to '${query}'\n") 2>&1 | tee -a ${log_filepath}
     	continue # Doesn't finish the loop
 	fi
@@ -147,6 +147,8 @@ for query in ${queries[@]}; do
 	# Put together into the same array
 	file_start_lines=($(echo ${file_start_lines[@]} | tr ' ' $'\n' && echo ${last_line}))
 	
+	(>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
+	
 	# Now separate the file
 	for i in $(seq 1 $((${#file_start_lines[@]}-1))); do
 		j=$((${i}-1))
@@ -157,8 +159,6 @@ for query in ${queries[@]}; do
 		head -n ${file_end_line} ${output_directory}/query_hit.tmp.trunc | tail -n ${file_length} > ${output_directory}/query_hit.tmp.${i}
 	done
 	rm "${output_directory}/query_hit.tmp" "${output_directory}/query_hit.tmp.trunc"
-	
-	(>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
 
 	# Now extract the data and download the sequences
 	for i in $(seq 1 ${number_of_hits}); do
