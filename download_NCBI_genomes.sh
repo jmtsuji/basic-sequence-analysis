@@ -85,7 +85,6 @@ log_filepath="${output_directory}/genome_info.log"
 
 # Initialize logfile
 mkdir -p "${output_directory}"
-cd "${output_directory}"
 printf "" > ${log_filepath}
 
 # Startup info
@@ -116,10 +115,10 @@ for query in ${queries[@]}; do
 	# Search for the assembly document summary for the organism(s) matching the query.
 	# NOTE: if there are multiple assemblies that match the search, will get multiple documents' worth of data.	
 	(>&2 echo "[ $(date -u) ]: Searching for '${query}'" | tee -a ${log_filepath})
-	esearch -query "${query}" -db assembly | efetch -format docsum > query_hit.tmp
+	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/query_hit.tmp"
 		
 	# Will be empty if the search failed
-	if [ $(echo ${query_hit.tmp} | wc -m) = 1 ]; then
+	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) = 1 ]; then
 	    (>&2 echo "[ $(date -u) ]: Found no search hits to '${query}'" | tee -a ${log_filepath})
     	continue # Doesn't finish the loop
 	fi
@@ -128,13 +127,13 @@ for query in ${queries[@]}; do
 	# But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
     IFS_backup=${IFS}
     IFS="\n" # Only separate between queries when hitting a line space
-	organism=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element Organism))
-	species=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element SpeciesName))
-	accession=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element AssemblyAccession))
-	assembly_name=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element AssemblyName))
-	genbank_ftp_base=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
+	organism=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element Organism))
+	species=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element SpeciesName))
+	accession=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyAccession))
+	assembly_name=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element AssemblyName))
+	genbank_ftp_base=($(cat "${output_directory}/query_hit.tmp" | xtract -pattern DocumentSummary -element FtpPath_GenBank))
 	IFS=${IFS_backup}
-	rm query_hit.tmp
+	rm "${output_directory}/query_hit.tmp"
 
 	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies" | tee -a ${log_filepath})
 	# TODO - confirm that the # of entries for each pulled element above are the same
@@ -173,17 +172,18 @@ for query in ${queries[@]}; do
         if [ ${info_only} = "False" ]; then
 			# Make a nice output filename
 			species_cleaned=$(echo ${species_single} | sed "s/ \+/_/g" | sed "s/[[:punct:]]\+/_/g") # Replace odd punctuation with underscores
-			outfile_name="${species_cleaned}__${accession_single}"
+            outfile_name="${species_cleaned}__${accession_single}"
+			outfile_path="${output_directory}/${outfile_name}"
 
 			# Download
 			# TODO - set way to only download some of these files if desired
     		(>&2 printf ": Downloading as '${outfile_name}' from '${genbank_ftp_base_single}'\n" | tee -a ${log_filepath})
 			genbank_prefix=${genbank_ftp_base##*/}
-			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.fna.gz > ${outfile_name}.fna.gz
-			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_cds_from_genomic.fna.gz > ${outfile_name}.ffn.gz
-			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_protein.faa.gz > ${outfile_name}.faa.gz
-			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_rna_from_genomic.fna.gz > ${outfile_name}.ffn.rna.gz
-			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.gff.gz > ${outfile_name}.gff.gz
+			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.fna.gz > ${outfile_path}.fna.gz
+			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_cds_from_genomic.fna.gz > ${outfile_path}.ffn.gz
+			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_protein.faa.gz > ${outfile_path}.faa.gz
+			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_rna_from_genomic.fna.gz > ${outfile_path}.ffn.rna.gz
+			wget -q -O - ${genbank_ftp_base}/${genbank_prefix}_genomic.gff.gz > ${outfile_path}.gff.gz
 			
 		else
 		    (>&2 printf "\n" | tee -a ${log_filepath}) # Finish the log statement
