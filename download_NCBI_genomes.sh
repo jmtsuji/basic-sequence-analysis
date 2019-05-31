@@ -85,6 +85,7 @@ log_filepath="${output_directory}/genome_info.log"
 
 # Initialize logfile
 mkdir -p "${output_directory}"
+cd "${output_directory}"
 printf "" > ${log_filepath}
 
 # Startup info
@@ -115,10 +116,10 @@ for query in ${queries[@]}; do
 	# Search for the assembly document summary for the organism(s) matching the query.
 	# NOTE: if there are multiple assemblies that match the search, will get multiple documents' worth of data.	
 	(>&2 echo "[ $(date -u) ]: Searching for '${query}'" | tee -a ${log_filepath})
-	organism_docs=$(esearch -query "${query}" -db assembly | efetch -format docsum)
+	esearch -query "${query}" -db assembly | efetch -format docsum > query_hit.tmp
 		
 	# Will be empty if the search failed
-	if [ $(echo ${organism_docs} | wc -m) = 1 ]; then
+	if [ $(echo ${query_hit.tmp} | wc -m) = 1 ]; then
 	    (>&2 echo "[ $(date -u) ]: Found no search hits to '${query}'" | tee -a ${log_filepath})
     	continue # Doesn't finish the loop
 	fi
@@ -127,12 +128,13 @@ for query in ${queries[@]}; do
 	# But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
     IFS_backup=${IFS}
     IFS="\n" # Only separate between queries when hitting a line space
-	organism=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element Organism))
-	species=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element SpeciesName))
-	accession=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element AssemblyAccession))
-	assembly_name=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element AssemblyName))
-	genbank_ftp_base=($(echo ${organism_docs} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
+	organism=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element Organism))
+	species=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element SpeciesName))
+	accession=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element AssemblyAccession))
+	assembly_name=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element AssemblyName))
+	genbank_ftp_base=($(echo ${query_hit.tmp} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
 	IFS=${IFS_backup}
+	rm query_hit.tmp
 
 	(>&2 echo "[ $(date -u) ]: Found ${#organism[@]} matching assemblies" | tee -a ${log_filepath})
 	# TODO - confirm that the # of entries for each pulled element above are the same
@@ -191,4 +193,4 @@ for query in ${queries[@]}; do
 
 done
 
-(>&2 echo "[ $(date -u) ]: ${script_name}: Finished.)
+(>&2 echo "[ $(date -u) ]: ${script_name}: Finished." | tee -a ${log_filepath})
