@@ -13,6 +13,7 @@ See the help statement at the start of each script by running the script. Many o
 ## What's included?
 ### Scripts (quick descriptions; see help files for more)
 - `check_md5_hashes.sh`: tests if .fastq.gz files have the same MD5 hash as downloaded (e.g., from a webserver)
+- `download_NCBI_genomes.sh`: downloads genomes from NCBI given a list of search queries
 - `fasta_dealign.sh`: dealigns fastA file
 - `fasta_U_T_swap.sh`: converts between U's and T's in FastA files
 - `fastq_deinterleave.sh`: converts interleaved FastQ to separate R1/R2 files
@@ -29,4 +30,3 @@ See the help statement at the start of each script by running the script. Many o
 
 ## Final note
 These scripts are 'quick and dirty' and do not carefully check user input, so be careful to follow the usage instructions carefully or look at the code to see how the tools work (workflow is very straightforward for most). Please let me know if you have questions or run into issues.
-
