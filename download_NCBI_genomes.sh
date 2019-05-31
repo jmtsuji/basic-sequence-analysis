@@ -147,7 +147,7 @@ for query in ${queries[@]}; do
 		genbank_ftp_base_single=${genbank_ftp_base[${j}]}
 
 		# Add entry to table
-        (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')" | tee -a ${log_filepath}))
+        (>&2 printf "[ $(date -u) ]: '${accession_single}' ('${organism_single}')" | tee -a ${log_filepath})
 		printf "${query}\t${organism_single}\t${species_single}\t${accession_single}\t${assembly_name_single}\t${genbank_ftp_base_single}" >> ${output_table_filepath}
  
 		## Notes - Using the RefSeq FTP
