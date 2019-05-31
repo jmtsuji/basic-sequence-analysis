@@ -71,6 +71,10 @@ if [ ${info_only} != "True" -a ${info_only} != "False" ]; then
     exit 1
 fi
 
+# Set script-determined variables
+output_table_filepath="${output_directory}/genome_info.tsv"
+log_filepath="${output_directory}/genome_info.log"
+
 # Initialize logfile
 printf "" > ${log_filepath}
 
@@ -92,10 +96,6 @@ if [ ${force_override} = "False" ]; then
 		exit 1
 	fi
 fi
-
-# Set script-determined variables
-output_table_filepath="${output_directory}/genome_info.tsv"
-log_filepath="${output_directory}/genome_info.log"
 
 # Load queries from input file
 # But first temporarily change the 'internal field separator' (IFS) to allow for spaces in the queries
