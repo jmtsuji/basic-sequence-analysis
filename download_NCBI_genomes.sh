@@ -36,7 +36,7 @@ info_only="False"
 
 # Set options (help from https://wiki.bash-hackers.org/howto/getopts_tutorial; accessed March 8th, 2019)
 OPTIND=1 # reset the OPTIND counter just in case
-while getopts ":f:i" opt; do
+while getopts ":f:i:" opt; do
 	case ${opt} in
 		f)
 			force_override=${OPTARG}
@@ -52,7 +52,7 @@ while getopts ":f:i" opt; do
 			(>&2 echo "[ $(date -u) ]: ERROR: argument needed following '-${OPTARG}'. Exiting...")
 			exit 1
 			;;
-	esac
+    esac
 done
 
 # Set positional arguments
