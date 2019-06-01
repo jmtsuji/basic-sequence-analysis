@@ -3,6 +3,7 @@
 : #### SETTINGS ####
 : input_filepath: test_input.list
 : output_directory: test_output
+: filter_element: False
 : force_override: False
 : info_only: True
 : ##################
