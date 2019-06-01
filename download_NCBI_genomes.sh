@@ -274,7 +274,7 @@ for query in ${queries[@]}; do
 	
 	if [ ${filter_element} != "False" ]; then
 	    (>&2 echo "[ $(date -u) ]: FINAL: got $((${number_of_hits}-${skipped_entries})) assemblies. Filtered ${skipped_entries} of the original hits due to not matching the '${filter_element}' element.") 2>&1 | tee -a ${log_filepath}
-	else
+	fi
 
 done
 
