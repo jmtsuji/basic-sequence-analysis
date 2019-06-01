@@ -16,5 +16,5 @@
 : Searching for 'PRJNA534305': Found 2 matching assemblies
 : 'GCA_005862285.1' ('Chlorobium sp. (green sulfur bacteria)')
 : 'GCA_005862225.1' ('Chlorobium sp. (green sulfur bacteria)')
-: Searching for 'Random text': Found 0 matching assemblies
+: Searching for 'Random text': Found no search hits to 'Random text'
 : download_NCBI_genomes.sh: Finished.

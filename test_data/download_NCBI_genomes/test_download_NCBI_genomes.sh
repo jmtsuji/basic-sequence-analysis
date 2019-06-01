@@ -28,13 +28,24 @@ fi
 # Set variables
 test_directory=$1
 
-# TODO - confirm test_directory exists
+# Confirm test_directory exists, then go there
+if [ ! -d ${test_directory} ]; then
+    echo "[ $(date -u) )]: ERROR: test_directory '${test_directory}' does not exist. Cannot continue test. Exiting..."
+    exit 1
+fi
 cd ${test_directory}
 
-# TODO - confirm test_output does not already exist
+# Confirm test_output does not already exist
+if [ -d test_output ]; then
+    echo "[ $(date -u) )]: ERROR: 'test_output' directory already exists. Cannot continue test. Exiting..."
+    exit 1
+fi
+
 echo "[ $(date -u) )]: Performing test run in '${test_directory}'"
 echo "[ $(date -u) )]: download_NCBI_genomes.sh -i True test_input.list test_output 2&>/dev/null"
-download_NCBI_genomes.sh -i True test_input.list test_output 2&>/dev/null
+# The second copy of the command is to print output to the screen during a re-try, unlike the silent first run.
+download_NCBI_genomes.sh -i True test_input.list test_output 2&>/dev/null || \
+    ( download_NCBI_genomes.sh -i True -f True test_input.list test_output )
 
 ######
 ## NOTE: To prepare md5sum test dataset for the first time
