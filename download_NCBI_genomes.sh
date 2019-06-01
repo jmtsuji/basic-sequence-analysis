@@ -159,7 +159,11 @@ for query in ${queries[@]}; do
 	# Put together into the same array
 	file_start_lines=($(echo ${file_start_lines[@]} | tr ' ' $'\n' && echo ${last_line}))
 	
-	(>&2 printf ": Found ${number_of_hits} matching assemblies to general query\n") 2>&1 | tee -a ${log_filepath}
+	if [ ${filter_element} != "False" ]; then
+	    (>&2 printf ": Found ${number_of_hits} matching assemblies BEFORE filtration (see below)\n") 2>&1 | tee -a ${log_filepath}
+	else
+	    (>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
+	fi
 	
 	# Now separate the file
 	for i in $(seq 1 $((${#file_start_lines[@]}-1))); do
@@ -184,7 +188,7 @@ for query in ${queries[@]}; do
         if [ ${filter_element} != "False" ]; then
 			# Filter the results by an additional optional filter criterion for the query
 			# If the element does not contain the grep query, then
-			if ! cat ${query_file} | xtract -pattern DocumentSummary -element ${filter_element} | grep -q ${query}; then
+			if ! cat ${query_file} | xtract -pattern DocumentSummary -element ${filter_element} | grep -q "${query}"; then
 				# Don't work with this entry; does not match filter criteria. Skip.
 				skipped_entries=$((${skipped_entries}+1))
 				continue
@@ -268,9 +272,9 @@ for query in ${queries[@]}; do
 
 	done
 	
-	if [ ${skipped_entries} -gt 0 ]; then
-	    (>&2 echo "[ $(date -u) ]: Filtered out ${skipped_entries} of the original hits due to not matching the '${filter_element}' element.") 2>&1 | tee -a ${log_filepath}
-	fi
+	if [ ${filter_element} != "False" ]; then
+	    (>&2 echo "[ $(date -u) ]: FINAL: got $((${number_of_hits}-${skipped_entries})) assemblies. Filtered ${skipped_entries} of the original hits due to not matching the '${filter_element}' element.") 2>&1 | tee -a ${log_filepath}
+	else
 
 done
 
