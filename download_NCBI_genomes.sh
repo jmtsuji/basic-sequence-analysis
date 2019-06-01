@@ -25,8 +25,30 @@ if [ $# -lt 2 ]; then
    	printf "   -e   filter_element (character, NCBI DocumentSummary element): Filter the hits by partial matches of the query to a particular element in the NCBI DocumentSummary (e.g., SpeciesName). You need to know the exact wording of the NCBI document summary element.) [Default: False]\n"
    	printf "              To see an example Document Summary, run: 'esearch -query GCF_000168715.1 -db assembly | efetch -format docsum'\n"
    	printf "   -f   force_override (False/True): Force to use the output folder, even if it already exists? (Existing files with same names as output will be overwritten.) [Default: False]\n"
-   	printf "   -i   info_only (False/True): Don't actually download the genomes; only pull the genome info and save it to a table. [Default: False]\n"
+   	printf "   -i   info_only (False/True): Don't actually download the genomes; only pull the genome info and save it to a table. [Default: False]\n\n"
 
+   	printf "Example usages:\n"
+   	printf "   1. Suppose you want to download the genomes of 5 species but only have their strain identifiers (e.g., DSM 13031).\n"
+   	printf "            Make a list of the five strain IDs in a text file (e.g., strains.list), then run:\n"
+    printf "                ${0##*/} strains.list strains_downloaded\n"
+   	printf "   2. Suppose you want to know all available genomes in a particular genus (e.g., Chlorobium).\n"
+   	printf "            Make a list with the name of the genus (e.g., genus.list), then run:\n"
+    printf "                ${0##*/} -i True genus.list genus_downloaded\n"
+    printf "            (The -i True flag is if you just want to see the results in a table but not download)\n\n"
+    printf "            You could be more specific by only having your query match the SpeciesName element in the NCBI database:\n"
+    printf "                ${0##*/} -e SpeciesName -i True genus.list genus_downloaded\n\n"
+    
+    printf "Output:\n"
+    printf "   - For every run, 'genome_info.log' and 'genome_info.tsv' are created in the output folder with details about the search results.\n"
+    printf "   - If you download genomes, the following are downloaded:\n"
+    printf "       - Contigs (.fna.gz)\n"
+    printf "       - Genes (.ffn.gz)\n"
+    printf "       - Predicted ORFs (.faa.gz)\n"
+    printf "       - RNA genes (.ffn.rna.gz)\n"
+    printf "       - Genome Flat File (position information; .gff.gz)\n"
+    printf "   - By default, the RefSeq genome entry is downloaded in favour of the GenBank entry, if a RefSeq entry exists.\n"
+    printf "   - Some GenBank entries are missing a few of the files above. They will not be downloaded, in that case, and a warning will appear in the log.\n\n"
+   	
 	# Exit
 	exit 1
 
