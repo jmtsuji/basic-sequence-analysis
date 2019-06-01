@@ -191,14 +191,12 @@ for query in ${queries[@]}; do
 		fi
 		rm ${query_file}
 
-        # Change isolate to NA if empty
-        if [ -z ${isolate} ]; then
-            isolate="NA"
-        fi
-
 		# Add entry to table
         (>&2 printf "[ $(date -u) ]: '${accession}' ('${organism}'; ${download_db})") 2>&1 | tee -a ${log_filepath}
+        # Use set +u to temporarily allow empty variables to be evaluated (i.e., in case non-important fields had no hit)
+        set +u
 		printf "${query}\t${organism}\t${species}\t${isolate}\t${accession}\t${assembly_name}\t${download_db}\t${ftp_base}\n" >> ${output_table_filepath}
+        set -u
  
 		## Notes - Using the RefSeq or GenBank FTP
 		# E.g., if URL is: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1
