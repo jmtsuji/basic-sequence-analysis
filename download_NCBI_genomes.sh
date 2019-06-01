@@ -118,7 +118,7 @@ for query in ${queries[@]}; do
 	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/query_hit.tmp"
 		
 	# Will be empty if the search failed
-	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) -lt 2 ]; then
+	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) -lt 10 ]; then
 	    (>&2 printf ": Found no search hits to '${query}'\n") 2>&1 | tee -a ${log_filepath}
     	continue # Doesn't finish the loop
 	fi
