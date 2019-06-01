@@ -252,16 +252,16 @@ for query in ${queries[@]}; do
 
 done
 
-# Restore the old IFS
-IFS=${IFS_backup}
-
-# Delete tmp dir
-rm -r "${output_directory}/tmp"
-
 # Report if any downloads failed
 failed_downloads=$(cat ${failed_downloads_filepath})
 if [ ${failed_downloads} -gt 0 ]; then
     (>&2 echo "[ $(date -u) ]: ${0##*/}: WARNING: ${failed_downloads} file downloads FAILED. See log for details.") 2>&1 | tee -a ${log_filepath}
 fi
+
+# Restore the old IFS
+IFS=${IFS_backup}
+
+# Delete tmp dir
+rm -r "${output_directory}/tmp"
 
 (>&2 echo "[ $(date -u) ]: ${0##*/}: Finished.") 2>&1 | tee -a ${log_filepath}
