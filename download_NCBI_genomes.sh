@@ -119,12 +119,12 @@ for query in ${queries[@]}; do
 	# Search for the assembly document summary for the organism(s) matching the query.
 	# NOTE: if there are multiple assemblies that match the search, will get multiple documents' worth of data.	
 	(>&2 printf "[ $(date -u) ]: Searching for '${query}'") 2>&1 | tee -a ${log_filepath}
-	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/query_hit.tmp"
+	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/tmp/query_hit.tmpp"
 		
 	# Will be empty if the search failed
-	if [ $(cat "${output_directory}/query_hit.tmp" | wc -m) -lt 10 ]; then
+	if [ $(cat "${output_directory}/tmp/query_hit.tmp" | wc -m) -lt 10 ]; then
 	    (>&2 printf ": Found no search hits to '${query}'\n") 2>&1 | tee -a ${log_filepath}
-	    rm "${output_directory}/query_hit.tmp"
+	    rm "${output_directory}/tmp/query_hit.tmp"
     	continue # Doesn't finish the loop
 	fi
 	
@@ -139,15 +139,15 @@ for query in ${queries[@]}; do
 	#
 	
 	# So take off these chunks
-	tail -n +5 ${output_directory}/query_hit.tmp | head -n -2 > ${output_directory}/query_hit.tmp.trunc
+	tail -n +5 ${output_directory}/tmp/query_hit.tmp | head -n -2 > ${output_directory}/tmp/query_hit.tmp.trunc
 	# TODO - is it always this exact number of lines?
 	
 	# Each document starts with <DocumentSummary> and ends with </DocumentSummary>
 	# First, figure out where each file starts
-	file_start_lines=($(grep -n "<DocumentSummary>" ${output_directory}/query_hit.tmp.trunc | cut -d ":" -f 1))
+	file_start_lines=($(grep -n "<DocumentSummary>" ${output_directory}/tmp/query_hit.tmp.trunc | cut -d ":" -f 1))
 	number_of_hits=${#file_start_lines[@]}
 	# Also figure out the last line of the file (and add one so that it looks like another starting line)
-	last_line=$(cat ${output_directory}/query_hit.tmp.trunc | wc -l)
+	last_line=$(cat ${output_directory}/tmp/query_hit.tmp.trunc | wc -l)
 	last_line=$((${last_line}+1))
 	# Put together into the same array
 	file_start_lines=($(echo ${file_start_lines[@]} | tr ' ' $'\n' && echo ${last_line}))
@@ -161,9 +161,9 @@ for query in ${queries[@]}; do
 		file_start_line=${file_start_lines[${j}]}
 		file_end_line=$((${file_start_lines[${k}]}-1)) # The start line of the next entry, minus 1
 		file_length=$((${file_end_line}-${file_start_line}+1))
-		head -n ${file_end_line} ${output_directory}/query_hit.tmp.trunc | tail -n ${file_length} > ${output_directory}/query_hit.tmp.${i}
+		head -n ${file_end_line} ${output_directory}/tmp/query_hit.tmp.trunc | tail -n ${file_length} > ${output_directory}/tmp/query_hit.tmp.${i}
 	done
-	rm "${output_directory}/query_hit.tmp" "${output_directory}/query_hit.tmp.trunc"
+	rm "${output_directory}/tmp/query_hit.tmp" "${output_directory}/tmp/query_hit.tmp.trunc"
 
 	# Now extract the data and download the sequences
 	for i in $(seq 1 ${number_of_hits}); do
@@ -171,7 +171,7 @@ for query in ${queries[@]}; do
 		# Make alternative zero-ordered counter
 		j=$((${i}-1))
 		
-		query_file="${output_directory}/query_hit.tmp.${i}"
+		query_file="${output_directory}/tmp/query_hit.tmp.${i}"
 
 		# Parse important info out of the results page. Should only be one entry each.
 		# TODO - consider checking for entry length to confirm
