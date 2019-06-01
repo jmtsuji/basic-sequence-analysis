@@ -22,6 +22,8 @@ if [ $# -lt 2 ]; then
 	printf "   1. input_filepath: Path to the file containing your queries. This can either be a simple list of queries separated by new lines or a tab-separated table where the query is in the first column, with no header. Queries can include GCA accessions (e.g., 'GCA_000168715.1'), strain IDs (e.g., 'DSM 13031'), organism taxonomy (e.g., 'Chlorobium')... really, anything you want. Will pull all genome assembly matches.\n"
 	printf "   2. output_directory: Path to the directory where the genome phylogeny will be built. For safety, the script will not run if the directory already exists.\n\n"
 	printf "Options (optional):\n"
+   	printf "   -e   filter_element (character, NCBI DocumentSummary element): Filter the hits by partial matches of the query to a particular element in the NCBI DocumentSummary (e.g., SpeciesName). You need to know the exact wording of the NCBI document summary element.) [Default: False]\n"
+   	printf "              To see an example Document Summary, run: 'esearch -query GCF_000168715.1 -db assembly | efetch -format docsum'\n"
    	printf "   -f   force_override (False/True): Force to use the output folder, even if it already exists? (Existing files with same names as output will be overwritten.) [Default: False]\n"
    	printf "   -i   info_only (False/True): Don't actually download the genomes; only pull the genome info and save it to a table. [Default: False]\n"
 
@@ -31,13 +33,17 @@ if [ $# -lt 2 ]; then
 fi
 
 # Set defaults for options
+filter_element="False"
 force_override="False"
 info_only="False"
 
 # Set options (help from https://wiki.bash-hackers.org/howto/getopts_tutorial; accessed March 8th, 2019)
 OPTIND=1 # reset the OPTIND counter just in case
-while getopts ":f:i:" opt; do
+while getopts ":e:f:i:" opt; do
 	case ${opt} in
+		e)
+			filter_element=${OPTARG}
+			;;
 		f)
 			force_override=${OPTARG}
 			;;
@@ -95,6 +101,7 @@ printf "" > ${log_filepath}
 (>&2 echo "[ $(date -u) ]: #### SETTINGS ####") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: input_filepath: ${input_filepath}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: output_directory: ${output_directory}") 2>&1 | tee -a ${log_filepath}
+(>&2 echo "[ $(date -u) ]: filter_element: ${filter_element}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: force_override: ${force_override}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: info_only: ${info_only}") 2>&1 | tee -a ${log_filepath}
 (>&2 echo "[ $(date -u) ]: ##################") 2>&1 | tee -a ${log_filepath}
@@ -152,7 +159,7 @@ for query in ${queries[@]}; do
 	# Put together into the same array
 	file_start_lines=($(echo ${file_start_lines[@]} | tr ' ' $'\n' && echo ${last_line}))
 	
-	(>&2 printf ": Found ${number_of_hits} matching assemblies\n") 2>&1 | tee -a ${log_filepath}
+	(>&2 printf ": Found ${number_of_hits} matching assemblies to general query\n") 2>&1 | tee -a ${log_filepath}
 	
 	# Now separate the file
 	for i in $(seq 1 $((${#file_start_lines[@]}-1))); do
@@ -165,6 +172,7 @@ for query in ${queries[@]}; do
 	done
 	rm "${output_directory}/tmp/query_hit.tmp" "${output_directory}/tmp/query_hit.tmp.trunc"
 
+    skipped_entries=0
 	# Now extract the data and download the sequences
 	for i in $(seq 1 ${number_of_hits}); do
 
@@ -172,6 +180,16 @@ for query in ${queries[@]}; do
 		j=$((${i}-1))
 		
 		query_file="${output_directory}/tmp/query_hit.tmp.${i}"
+        
+        if [ ${filter_element} != "False" ]; then
+			# Filter the results by an additional optional filter criterion for the query
+			# If the element does not contain the grep query, then
+			if ! cat ${query_file} | xtract -pattern DocumentSummary -element ${filter_element} | grep -q ${query}; then
+				# Don't work with this entry; does not match filter criteria. Skip.
+				skipped_entries=$((${skipped_entries}+1))
+				continue
+			fi
+        fi
 
 		# Parse important info out of the results page. Should only be one entry each.
 		# TODO - consider checking for entry length to confirm
@@ -249,13 +267,17 @@ for query in ${queries[@]}; do
 		fi
 
 	done
+	
+	if [ ${skipped_entries} -gt 0 ]; then
+	    (>&2 echo "[ $(date -u) ]: Filtered out ${skipped_entries} of the original hits due to not matching the '${filter_element}' element.") 2>&1 | tee -a ${log_filepath}
+	fi
 
 done
 
 # Report if any downloads failed
 failed_downloads=$(cat ${failed_downloads_filepath})
 if [ ${failed_downloads} -gt 0 ]; then
-    (>&2 echo "[ $(date -u) ]: ${0##*/}: WARNING: ${failed_downloads} file downloads FAILED. See log for details.") 2>&1 | tee -a ${log_filepath}
+    (>&2 echo "[ $(date -u) ]: WARNING: ${failed_downloads} file downloads FAILED. See log for details.") 2>&1 | tee -a ${log_filepath}
 fi
 
 # Restore the old IFS
