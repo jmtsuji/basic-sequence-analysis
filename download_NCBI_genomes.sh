@@ -119,7 +119,7 @@ for query in ${queries[@]}; do
 	# Search for the assembly document summary for the organism(s) matching the query.
 	# NOTE: if there are multiple assemblies that match the search, will get multiple documents' worth of data.	
 	(>&2 printf "[ $(date -u) ]: Searching for '${query}'") 2>&1 | tee -a ${log_filepath}
-	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/tmp/query_hit.tmpp"
+	esearch -query "${query}" -db assembly | efetch -format docsum > "${output_directory}/tmp/query_hit.tmp"
 		
 	# Will be empty if the search failed
 	if [ $(cat "${output_directory}/tmp/query_hit.tmp" | wc -m) -lt 10 ]; then
