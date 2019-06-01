@@ -109,7 +109,7 @@ queries=($(cut -d $'\t' -f 1 ${input_filepath}))
 (>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search") 2>&1 | tee -a ${log_filepath}
 
 # Initialize information table
-printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tdatabase\tgenbank_ftp_link\n" > ${output_table_filepath}
+printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tdatabase\tncbi_ftp_link\n" > ${output_table_filepath}
 
 # Set a variable to know if any downloads failed
 echo "0" > ${failed_downloads_filepath}
