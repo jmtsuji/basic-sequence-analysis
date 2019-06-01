@@ -108,7 +108,7 @@ queries=($(cut -d $'\t' -f 1 ${input_filepath}))
 (>&2 echo "[ $(date -u) ]: Found '${#queries[@]}' queries to search") 2>&1 | tee -a ${log_filepath}
 
 # Initialize information table
-printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tgenbank_ftp_link\n" > ${output_table_filepath}
+printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tdatabase\tgenbank_ftp_link\n" > ${output_table_filepath}
 
 # Set a variable to know if any downloads failed
 failed_downloads=0
@@ -172,29 +172,30 @@ for query in ${queries[@]}; do
 		
 		query_file="${output_directory}/query_hit.tmp.${i}"
 
-		# Parse important info out of the results page
+		# Parse important info out of the results page. Should only be one entry each.
+		# TODO - consider checking for entry length to confirm
 		organism=($(cat ${query_file} | xtract -pattern DocumentSummary -element Organism))
 		species=($(cat ${query_file} | xtract -pattern DocumentSummary -element SpeciesName))
 		isolate=($(cat ${query_file} | xtract -pattern DocumentSummary -element Isolate))
-		accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element AssemblyAccession))
 		assembly_name=($(cat ${query_file} | xtract -pattern DocumentSummary -element AssemblyName))
 		
 		# Get RefSeq if present but GenBank otherwise
-		refseq_ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_RefSeq))
-		if [ $(echo ${refseq_ftp_base} | wc -m) -lt 2 ]; then
-		    genbank_ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
-		    ftp_base=${genbank_ftp_base}
+		if [ $(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_RefSeq | wc -m) -lt 2 ]; then
+		    download_db="GenBank"
+		    ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
+		    accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element Genbank))
 		else
-		    ftp_base=${refseq_ftp_base}
+            download_db="RefSeq"
+		    ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_RefSeq))
+		    accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element RefSeq))
 		fi
-		# TODO - consider reporting this decision to the user
 		rm ${query_file}
 
 		# Add entry to table
-        (>&2 printf "[ $(date -u) ]: '${accession}' ('${organism}')") 2>&1 | tee -a ${log_filepath}
-		printf "${query}\t${organism}\t${species}\t${isolate}\t${accession}\t${assembly_name}\t${ftp_base}\n" >> ${output_table_filepath}
+        (>&2 printf "[ $(date -u) ]: '${accession}' ('${organism}'; ${download_db})") 2>&1 | tee -a ${log_filepath}
+		printf "${query}\t${organism}\t${species}\t${isolate}\t${accession}\t${assembly_name}\t${download_db}\t${ftp_base}\n" >> ${output_table_filepath}
  
-		## Notes - Using the RefSeq FTP
+		## Notes - Using the RefSeq or GenBank FTP
 		# E.g., if URL is: ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/168/715/GCF_000168715.1_ASM16871v1
 		# (Note: the accession here is 'GCF_000168715.1', and the assembly name name is 'ASM16871v1')
 		# Then here are URLs for the following types of data:
