@@ -82,9 +82,10 @@ fi
 # Set script-determined variables
 output_table_filepath="${output_directory}/genome_info.tsv"
 log_filepath="${output_directory}/genome_info.log"
+failed_downloads_filepath="${output_directory}/tmp/failed_downloads.tmp"
 
 # Initialize logfile
-mkdir -p "${output_directory}"
+mkdir -p "${output_directory}/tmp"
 printf "" > ${log_filepath}
 
 # Startup info
@@ -111,7 +112,7 @@ queries=($(cut -d $'\t' -f 1 ${input_filepath}))
 printf "query\torganism\tspecies\tisolate\tassembly_accession\tassembly_name\tdatabase\tgenbank_ftp_link\n" > ${output_table_filepath}
 
 # Set a variable to know if any downloads failed
-failed_downloads=0
+echo "0" > ${failed_downloads_filepath}
 
 for query in ${queries[@]}; do
 
@@ -222,19 +223,24 @@ for query in ${queries[@]}; do
 			# For each URL, report to the user if it fails to download for some reason.
 			set +e # Let the script keep going if one fails.
 			wget -q -O - ${ftp_base}/${download_prefix}_genomic.fna.gz > ${outfile_path}.fna.gz || \
-			    ( failed_downloads=$((${failed_downloads}+1)) && \
+			    ( failed_downloads=$(($(cat ${failed_downloads_filepath})+1)) && \
+			    echo ${failed_downloads} > ${failed_downloads_filepath} && \
 			    (>&2 echo "[ $(date -u) ]: FAILED to download '${outfile_path}.fna.gz'") 2>&1 | tee -a ${log_filepath} )
 			wget -q -O - ${ftp_base}/${download_prefix}_cds_from_genomic.fna.gz > ${outfile_path}.ffn.gz || \
-			    ( failed_downloads=$((${failed_downloads}+1)) && \
+			    ( failed_downloads=$(($(cat ${failed_downloads_filepath})+1)) && \
+			    echo ${failed_downloads} > ${failed_downloads_filepath} && \
 			    (>&2 echo "[ $(date -u) ]: FAILED to download '${outfile_path}.ffn.gz'") 2>&1 | tee -a ${log_filepath} )
 			wget -q -O - ${ftp_base}/${download_prefix}_protein.faa.gz > ${outfile_path}.faa.gz || \
-			    ( failed_downloads=$((${failed_downloads}+1)) && \
+			    ( failed_downloads=$(($(cat ${failed_downloads_filepath})+1)) && \
+			    echo ${failed_downloads} > ${failed_downloads_filepath} && \
 			    (>&2 echo "[ $(date -u) ]: FAILED to download '${outfile_path}.faa.gz'") 2>&1 | tee -a ${log_filepath} )
 			wget -q -O - ${ftp_base}/${download_prefix}_rna_from_genomic.fna.gz > ${outfile_path}.ffn.rna.gz || \
-			    ( failed_downloads=$((${failed_downloads}+1)) && \
+			    ( failed_downloads=$(($(cat ${failed_downloads_filepath})+1)) && \
+			    echo ${failed_downloads} > ${failed_downloads_filepath} && \
 			    (>&2 echo "[ $(date -u) ]: FAILED to download '${outfile_path}.ffn.rna.gz'") 2>&1 | tee -a ${log_filepath} )
 			wget -q -O - ${ftp_base}/${download_prefix}_genomic.gff.gz > ${outfile_path}.gff.gz || \
-			    ( failed_downloads=$((${failed_downloads}+1)) && \
+			    ( failed_downloads=$(($(cat ${failed_downloads_filepath})+1)) && \
+			    echo ${failed_downloads} > ${failed_downloads_filepath} && \
 			    (>&2 echo "[ $(date -u) ]: FAILED to download '${outfile_path}.gff.gz'") 2>&1 | tee -a ${log_filepath} )
 			set -e
 			
@@ -249,7 +255,11 @@ done
 # Restore the old IFS
 IFS=${IFS_backup}
 
+# Delete tmp dir
+rm -r "${output_directory}/tmp"
+
 # Report if any downloads failed
+failed_downloads=$(cat ${failed_downloads_filepath})
 if [ ${failed_downloads} -gt 0 ]; then
     (>&2 echo "[ $(date -u) ]: ${0##*/}: WARNING: ${failed_downloads} file downloads FAILED. See log for details.") 2>&1 | tee -a ${log_filepath}
 fi
