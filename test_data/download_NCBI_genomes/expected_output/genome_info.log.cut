@@ -8,13 +8,13 @@
 : ##################
 : Found '5' queries to search
 : Searching for 'Chlorobium ferrooxidans': Found 1 matching assemblies
-: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)')
+: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)'; RefSeq)
 : Searching for 'Chlorobium sp. KB01': Found 1 matching assemblies
-: 'GCF_001975465.1' ('Chlorobium sp. KB01 (green sulfur bacteria)')
+: 'GCF_001975465.1' ('Chlorobium sp. KB01 (green sulfur bacteria)'; RefSeq)
 : Searching for 'GCF_000168715.1': Found 1 matching assemblies
-: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)')
+: 'GCF_000168715.1' ('Chlorobium ferrooxidans DSM 13031 (green sulfur bacteria)'; RefSeq)
 : Searching for 'PRJNA534305': Found 2 matching assemblies
-: 'GCA_005862285.1' ('Chlorobium sp. (green sulfur bacteria)')
-: 'GCA_005862225.1' ('Chlorobium sp. (green sulfur bacteria)')
+: 'GCA_005862285.1' ('Chlorobium sp. (green sulfur bacteria)'; GenBank)
+: 'GCA_005862225.1' ('Chlorobium sp. (green sulfur bacteria)'; GenBank)
 : Searching for 'Random text': Found no search hits to 'Random text'
 : download_NCBI_genomes.sh: Finished.
