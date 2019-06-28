@@ -86,7 +86,7 @@ gtt-clean-after-test.sh
 
 ### Install this repo's wrapper for GToTree
 ```
-basic_sequence_analysis_version="1.3.1"
+basic_sequence_analysis_version="1.3.2"
 conda activate gtotree # Note that 'gtotree_${GToTree_version}' is needed is you used the advance install method
 
 cd /tmp
