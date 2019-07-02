@@ -155,7 +155,7 @@ elif [ $(cat ${output_dir}/input_genomes_faa.list | wc -l) = 0 ]; then
 	# Run GToTree
 	(>&2 echo "[ $(date -u) ]: Running GToTree")
 	(>&2 echo "[ $(date -u) ]: Command: GToTree -f ${output_dir}/input_genomes_fna.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log")
-	GToTree -f ${output_dir}/input_genomes_faa.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log
+	GToTree -f ${output_dir}/input_genomes_fna.list -H ${gtotree_phylogenetic_marker_set} -o ${output_dir}/alignment -T IQ-TREE -c ${gtotree_outlier_length_threshold} -G ${gtotree_minimum_hit_fraction} -n ${threads} -j ${threads} > ${output_dir}/GToTree.log
 
 else
 
