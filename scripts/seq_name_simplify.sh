@@ -4,16 +4,20 @@ set -euo pipefail
 # seq_name_simplify.sh
 # Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
 # Description: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses
+# Credits: Based off template code from Michael Hall, a former bioinformatician in our group
 
 # Startup processes
 VERSION=$(basic-sequence-analysis-version)
 script_name=${0##*/}
 script_name=${script_name%.*}
 
-# If no input is provided, provide help and exit
-if [ $# -lt 1 ]; then
-
-	# Help statement
+# If incorrect input is provided, provide help and exit
+if [ $# != 1 ]; then
+	printf "Error: missing or extra arguments supplied. To see help statement, run ${0##*/} -h\n"
+    exit 1
+fi
+if [ $1 = "-h" -o $1 = "--help" ]; then
+    # Help statement
 	printf "${script_name}: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses.\n"
 	printf "Version: ${VERSION}\n"
 	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
@@ -29,19 +33,8 @@ if [ $# -lt 1 ]; then
 	exit 1
 fi
 
-# Sources:
-#   General awk help: http://www.grymoire.com/Unix/Awk.html#uh-0 (May 13, 2015, and June 1, 2015)
-#   Read function: http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_08_02.html (May 13, 2015)
-#   Wildcard regex: http://www.panix.com/~elflord/unix/grep.html#wildcards (June 1, 2015)
-#   Based off code sent to me by Michael Hall on June 17, 2013 via email.
-
-# Test if the user wishes to receive from STDIN
-if [ $1 == "-" ]; then
-    input="-" # This means to receive from STDIN
-else
-    # Read input file name from user input into the script
-    input=$2
-fi
+# Receive user input
+input=$1
 
 seqtk seq -A ${input} \
 awk '{ \
