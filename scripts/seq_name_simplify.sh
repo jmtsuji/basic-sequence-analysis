@@ -38,7 +38,7 @@ input=$1
 
 seqtk seq -A ${input} \
 awk '{ \
-    if ($0 ~ /^>/) { \
+    if ($0 ~ /^>/); { \
         gsub("[^A-Za-z0-9>]", "_"); \
     } \
     else { \
