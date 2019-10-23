@@ -26,7 +26,7 @@ elif [ $1 = "-h" -o $1 = "--help" ]; then
   printf "Version: ${SCRIPT_VERSION}\n"
   printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
   printf "Dependencies: BLAST+\n\n"
-  printf "Usage: ${SCRIPT_NAME} query_faa output_csv evalue max_targets threads\n\n"
+  printf "Usage: ${SCRIPT_NAME} query_faa output_tsv evalue max_targets threads\n\n"
   printf "Notes:\n"
   printf "  - some settings are preset inside the code for this script for running blast. Modify the PRESETS section of the code to change these.\n"
 
