@@ -101,7 +101,7 @@ cat "${query_filepath}" | \
 
 # Add header
 echo "[ $(date -u) ]: Performing intermediate file prep" >&2
-sed -i '1 i\qseqid\tsseqid\tpident\tevalue\tqcovhsp\tbitscore\tstaxid\tsscinamet\stitle' ${output_basepath}_raw.tsv
+sed -i '1 i\qseqid\tsseqid\tpident\tevalue\tqcovhsp\tbitscore\tstaxid\tssciname\tstitle' ${output_basepath}_raw.tsv
 
 # Get full taxonomic lineage (beta code from C. Titus Brown's group)
 ## Get accession number
