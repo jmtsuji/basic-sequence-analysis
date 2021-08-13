@@ -15,7 +15,7 @@ if [ $# -lt 1 ]; then
 	printf "Version: ${VERSION}\n"
 	printf "Copyright Jackson M. Tsuji, ILTS Microbial Ecology Group, Hokkaido University, 2021\n"
 	printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
-	printf "Dependencies: bbmap>38, FGS++\n\n"
+	printf "Dependencies: bbmap>38, FGS++ (tested with commit 471fdf7 of the LeeBergstrand fork)\n\n"
 	printf "Usage: ${0##*/} [OPTIONS] input.fastq.gz > output.faa\n\n"
 
 	printf "Positional arguments:\n"
