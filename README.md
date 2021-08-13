@@ -23,6 +23,7 @@ See the help statement at the start of each script by running the script. Many o
 - `phylogeny_builder_whole_genome.sh`: quickly build whole genome trees via `GToTree`
 - `seq_name_simplify.sh`: removes special characters and such from FastA files
 - `text_find_and_replace.sh`: Find and replace specific text entries in an input text file
+- `predict_short_orfs.sh`: Predict open reading frames (ORFs) from short read metagenome data by wrapping bbmap's reformat.sh and FGS++
 
 ## Supporting files
 - `test_data`: for testing some of the scripts. Still in progress.
