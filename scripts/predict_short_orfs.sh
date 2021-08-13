@@ -28,7 +28,7 @@ if [ $# -lt 1 ]; then
    	printf "   -l   logfile: Optionally write a logfile to the filepath specified here [Default: /dev/stderr]\n\n"
 
 	printf "Usage details:\n"
-	printf "   - To receive from STDIN, use 'stdin' as the input.fastq.gz entry (using bbmap standards)\n\n"
+	printf "   - To receive from STDIN, use 'stdin.fq.gz' as the input.fastq.gz entry (using bbmap standards; you can change the extension after stdin based on input file format)\n\n"
 
 	# Exit
 	exit 1
@@ -91,12 +91,13 @@ echo "[ $(date -u) ]: ##################" >> "${logfile}"
 echo "[ $(date -u) ]: Running ORF prediction (log contents below)" >> ${logfile}
 
 reformat.sh in="${input_filepath}" out=stdout.fa threads="${threads}" fastawrap=0 \
-    trimreaddescription=t fixheaders=t 2>>"${logfile}" | \
+    trimreaddescription=t fixheaders=t int=f 2>>"${logfile}" | \
   FGS++ -s stdin -o stdout -w 0 -r "${fgs_train_dir}" \
     -t "${fgs_model}" -p "${threads}" -m 50000 2>>"${logfile}"
 # TODO - this is a little odd because the FGS++ log will be printed concurrently into the same file
 #        as the reformat log. In practice, it works because FGSpp will just print a "Run finished with xx threads"
 #        message after finishing, i.e., at the very bottom of the log.
 # TODO - FGS++ logfile does not seem to print...
+# TODO - assumes interleaved is False
 
 echo "[ $(date -u) ]: ORF prediction finished. Script finished." >> ${logfile}
