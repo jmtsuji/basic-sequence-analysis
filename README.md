@@ -1,7 +1,7 @@
 # basic-sequence-analysis
 Simple scripts to perform basic FastX file manipulations
 
-Copyright Jackson M. Tsuji, 2019
+Copyright Jackson M. Tsuji, 2021
 
 ## Dependencies:
 - All scripts require the `basic-sequence-analysis-version` helper script to run
