@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # fasta_dealign.sh
-# Copyright Jackson M. Tsuji, Neufeld Research Group, 2019
+# Copyright Jackson M. Tsuji, 2022
 # Description: subsamples all FastX in specified folder to desired read number/fraction.
 
 # Startup processes
@@ -13,22 +13,22 @@ script_name=${script_name%.*}
 # If no input is provided, provide help and exit
 if [ $# -lt 4 ]; then
 
-	# Help statement
-	printf "${script_name}: subsamples all FastX files in specified folder to desired read number/fraction. E.g., for titration in metagenomic assembly or rarefaction of FastA files.\n"
-	printf "Version: ${VERSION}\n"
-	printf "Copyright Jackson M. Tsuji, Neufeld Research Group, 2019\n"
-	printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
-	printf "Dependencies: seqtk\n\n"
-	printf "Usage: ${0##*/} input_directory output_directory subset_size seed 2>&1 | tee $(basename $0 .sh).log\n\n"
-	printf "Usage details:\n"
-	printf "   - Input FastQ files can be gzipped or unzipped. Will be saved as gzipped.\n"
-	printf "   - input_directory: Files in subfolders will not be subsetted.\n"
-	printf "   - output_directory: Will be created if it does not already exist. If it does exist, any files with same names will be OVERWRITTEN!\n"
-	printf "   - subset_size: Number of sequences of proportion of sequences to keep.\n"
-	printf "   - seed: Random seed for the subset algorithm.\n\n"
+  # Help statement
+  printf "${script_name}: subsamples all FastX files in specified folder to desired read number/fraction. E.g., for titration in metagenomic assembly or rarefaction of FastA files.\n"
+  printf "Version: ${VERSION}\n"
+  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
+  printf "Dependencies: seqtk\n\n"
+  printf "Usage: ${0##*/} input_directory output_directory subset_size seed 2>&1 | tee $(basename $0 .sh).log\n\n"
+  printf "Usage details:\n"
+  printf "   - Input FastQ files can be gzipped or unzipped. Will be saved as gzipped.\n"
+  printf "   - input_directory: Files in subfolders will not be subsetted.\n"
+  printf "   - output_directory: Will be created if it does not already exist. If it does exist, any files with same names will be OVERWRITTEN!\n"
+  printf "   - subset_size: Number of sequences of proportion of sequences to keep.\n"
+  printf "   - seed: Random seed for the subset algorithm.\n\n"
 
-	# Exit
-	exit 1
+  # Exit
+  exit 1
 fi
 
 # Receive user input
