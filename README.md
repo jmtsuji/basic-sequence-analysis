@@ -1,7 +1,7 @@
 # basic-sequence-analysis
 Simple scripts to perform basic FastX file manipulations
 
-Copyright Jackson M. Tsuji, 2021
+Copyright Jackson M. Tsuji, 2022
 
 ## Dependencies:
 - All scripts require the `basic-sequence-analysis-version` helper script to run
@@ -16,11 +16,9 @@ See the help statement at the start of each script by running the script. Many o
 - `download_NCBI_genomes.sh`: downloads genomes from NCBI given a list of search queries
 - `fasta_dealign.sh`: dealigns fastA file
 - `fasta_U_T_swap.sh`: converts between U's and T's in FastA files
-- `fastq_deinterleave.sh`: converts interleaved FastQ to separate R1/R2 files
 - `fastq_get_names.sh`: grab names from FastQ file
 - `fastx_subset.sh`: subset a batch of FastX files (FastA/FastQ) to a given number or proportion of reads
 - `phylogeny_builder_16S_rRNA.sh`: build a 16S rRNA gene tree subsetted to a particular part of the 16S gene, starting from unaligned sequences
-- `phylogeny_builder_whole_genome.sh`: quickly build whole genome trees via `GToTree`
 - `seq_name_simplify.sh`: removes special characters and such from FastA files
 - `text_find_and_replace.sh`: Find and replace specific text entries in an input text file
 - `predict_short_orfs.sh`: Predict open reading frames (ORFs) from short read metagenome data by wrapping bbmap's reformat.sh and FGS++
