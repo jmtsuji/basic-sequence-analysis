@@ -3,20 +3,29 @@ set -euo pipefail
 
 # run_whole_genome_phylogeny.sh
 # Description: Given unaligned input sequences, creates a 16S rRNA gene phylogeny truncated to the region of interest.
-# Copyright Jackson M. Tsuji, 2019
+# Copyright Jackson M. Tsuji, 2022
 
 script_version=$(basic-sequence-analysis-version)
 date_code=$(date '+%y%m%d')
 
 # If input field is empty, print help and end script
-if [ $# == 0 ]
-then
-printf "\n$(basename $0): automated 16S/18S rRNA gene alignment and phylogeny building\nVersion: ${script_version}\nContact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca; Neufeld research group) for error reports or feature requests.\n\nUsage: $(basename $0) input_16S.fasta 16S_start 16S_end 16S_model RAxML_iterations seq_evol_model threads 2>&1 | tee $(basename $0 .sh).log \n\n***Requirements:\n1. input_16S.fasta: should be an unaligned FastA file containing 16S/18S rRNA gene sequences. Avoid very long sequence names or special characters in sequence names (can cause problems with RAxML).\n2. 16S_start/end: start and end positions to truncate the 16S alignment to, compared to a standard reference alignment (like the position #s on 16S PCR primers, like 341f-806r).\n3. 16S_model: either bacteria, archaea, or eukarya (lowercase), to guide model usage for ssu-align\n4. RAxML iterations: number of maximum likelihood iterations when making the tree (e.g., 100).\n6. seq_evol_model (sequence evolution model): See RAxML manual for possible sequence evolution models, e.g., GTRCAT.\n5. Output: note that your output will be saved to the folder where you run this script and will have output names based on the input file name.\n\nDependencies: ssu-align and RAxML (raxmlHPC-PTHREADS-SSE3).\n\n"
-exit 1
+if [ $# == 0 ]; then
+  printf "\n$(basename $0): automated 16S/18S rRNA gene alignment and phylogeny building\n"
+  printf "Version: ${script_version}\n"
+  printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for error reports or feature requests.\n\n"
+  printf "Usage: $(basename $0) input_16S.fasta 16S_start 16S_end 16S_model RAxML_iterations seq_evol_model threads 2>&1 | tee $(basename $0 .sh).log \n\n"
+  printf "Positional arguments:\n"
+  printf "1. input_16S.fasta: should be an unaligned FastA file containing 16S/18S rRNA gene sequences. Avoid very long sequence names or special characters in sequence names (can cause problems with RAxML).\n"
+  printf "2-3. 16S_start/end: start and end positions to truncate the 16S alignment to, compared to a standard reference alignment (like the position #s on 16S PCR primers, like 341f-806r).\n"
+  printf "4. 16S_model: either bacteria, archaea, or eukarya (lowercase), to guide model usage for ssu-align\n"
+  printf "5. RAxML iterations: number of maximum likelihood iterations when making the tree (e.g., 100).\n"
+  printf "6. seq_evol_model (sequence evolution model): See RAxML manual for possible sequence evolution models, e.g., GTRCAT.\n"
+  printf "7. threads: Number of threads for making phylogenetic tree.\n\n"
+  printf "Notes:\n"
+  printf "  - Output: note that your output will be saved to the folder where you run this script and will have output names based on the input file name.\n\n"
+  printf "Dependencies: ssu-align and RAxML (raxmlHPC-PTHREADS-SSE3).\n\n"
+  exit 1
 fi
-# Using printf: http://stackoverflow.com/a/8467449 (accessed Feb 21, 2017)
-# Test for empty variable: Bioinformatics Data Skills Ch. 12 pg 403-404, and http://www.tldp.org/LDP/Bash-Beginners-Guide/html/sect_09_07.html and http://stackoverflow.com/a/2428006 (both accessed Feb 21, 2017)
-
 
 #################################################################
 ##### Settings: #################################################
@@ -28,23 +37,22 @@ end=$3
 model=$4
 iterations=$5
 seq_evol_model=$6
-threads=$7 # for RAxML
+threads=$7
 #################################################################
 
 echo "Running $(basename $0) version $script_version on ${date_code} (yymmdd). Will use ${threads} threads for RAxML."
 echo ""
 
-# Test that the input file exists, and exit if it does not
+# Test that the input file exists
 if [ ! -f ${input} ]; then
-# From http://stackoverflow.com/a/4906665, accessed Feb. 4, 2017
-    print "Did not find 16S sequence file at ${metagenome_file_pairs_info}. Job terminating."
-    exit 1
+  print "Did not find 16S sequence file at ${metagenome_file_pairs_info}. Job terminating."
+  exit 1
 fi
 
 # Test that the provided 16S model is correct
 if [ $model != "bacteria" -a $model != "archaea" -a $model != "eukarya" ]; then
-    print "ERROR: 16S_model must be either bacteria, archaea, or eukarya. You provided ${model}. Exiting..."
-    exit 1
+  print "ERROR: 16S_model must be either bacteria, archaea, or eukarya. You provided ${model}. Exiting..."
+  exit 1
 fi
 
 start_time=$(date)
@@ -66,7 +74,6 @@ base=${base%.*}
 # 2a. Create maximum likelihood tree using RAxML
 # 2b. Provide node support using the SH test built into RAxML
 ####################################
-
 
 mkdir -p ${out_dir}/01_alignment/model
 mkdir -p ${out_dir}/02_phylogeny
@@ -151,9 +158,9 @@ cp ../02_phylogeny/RAxML_info* logs
 
 tar -czf logs.tar.gz logs 2>&1 > /dev/null
 if [ -f logs.tar.gz ]; then
-    rm -r logs
+  rm -r logs
 else
-    echo "Problem summarizing log files."
+  echo "Problem summarizing log files."
 fi
 
 # Gzip phylogeny folder
@@ -161,9 +168,9 @@ cd ..
 
 tar -czf 02_phylogeny.tar.gz 02_phylogeny 2>&1 > /dev/null
 if [ -f 02_phylogeny.tar.gz ]; then
-    rm -r 02_phylogeny
+  rm -r 02_phylogeny
 else
-    echo "Problem compressing phylogeny information."
+  echo "Problem compressing phylogeny information."
 fi
 
 

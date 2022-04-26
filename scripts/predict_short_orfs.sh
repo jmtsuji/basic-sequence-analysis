@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # predict_short_orfs.sh
-# Jackson M. Tsuji, ILTS, 2021
+# Jackson M. Tsuji, 2022
 
 VERSION=$(basic-sequence-analysis-version)
 script_name=${0##*/}
@@ -10,28 +10,28 @@ script_name=${script_name%.*}
 # If no input is provided, provide help and exit
 if [ $# -lt 1 ]; then
 
-	# Help statement
-	printf "${script_name}: predicts short ORFs from short read metagenome data.\n"
-	printf "Version: ${VERSION}\n"
-	printf "Copyright Jackson M. Tsuji, ILTS Microbial Ecology Group, Hokkaido University, 2021\n"
-	printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
-	printf "Dependencies: bbmap>38, FGS++ (tested with commit 471fdf7 of the LeeBergstrand fork)\n\n"
-	printf "Usage: ${0##*/} [OPTIONS] input.fastq.gz > output.faa\n\n"
+  # Help statement
+  printf "${script_name}: predicts short ORFs from short read metagenome data.\n"
+  printf "Version: ${VERSION}\n"
+  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
+  printf "Dependencies: bbmap=38, FGS++ (tested with commit 471fdf7 of the LeeBergstrand fork)\n\n"
+  printf "Usage: ${0##*/} [OPTIONS] input.fastq.gz > output.faa\n\n"
 
-	printf "Positional arguments:\n"
-	printf "   1. input.fastq.gz: Path to the input short reads. In theory any FastX format, gzipped or not, is okay, but typical use is gzipped FastQ.\n\n"
+  printf "Positional arguments:\n"
+  printf "   1. input.fastq.gz: Path to the input short reads. In theory any FastX format, gzipped or not, is okay, but typical use is gzipped FastQ.\n\n"
 
-	printf "Options (optional):\n"
-   	printf "   -p   threads: number of parallel threads to use. [Default: 1]\n"
-    printf "   -t   fgs_model: Model file for FGS, located in the training file directory [Default: illumina_10].'\n"
-   	printf "   -r   fgs_train_dir: Path to the FragGeneScan training file directory [Default: ${CONDA_PREFIX}/bin/train]\n"
-   	printf "   -l   logfile: Optionally write a logfile to the filepath specified here [Default: /dev/stderr]\n\n"
+  printf "Options (optional):\n"
+  printf "   -p   threads: number of parallel threads to use. [Default: 1]\n"
+  printf "   -t   fgs_model: Model file for FGS, located in the training file directory [Default: illumina_10].'\n"
+  printf "   -r   fgs_train_dir: Path to the FragGeneScan training file directory [Default: ${CONDA_PREFIX}/bin/train]\n"
+  printf "   -l   logfile: Optionally write a logfile to the filepath specified here [Default: /dev/stderr]\n\n"
 
-	printf "Usage details:\n"
-	printf "   - To receive from STDIN, use 'stdin.fq.gz' as the input.fastq.gz entry (using bbmap standards; you can change the extension after stdin based on input file format)\n\n"
+  printf "Usage details:\n"
+  printf "   - To receive from STDIN, use 'stdin.fq.gz' as the input.fastq.gz entry (using bbmap standards; you can change the extension after stdin based on input file format)\n\n"
 
-	# Exit
-	exit 1
+  # Exit
+  exit 1
 fi
 
 # Set defaults for options
@@ -44,28 +44,28 @@ logfile="/dev/stderr"
 # Set options (help from https://wiki.bash-hackers.org/howto/getopts_tutorial; accessed March 8th, 2019)
 OPTIND=1 # reset the OPTIND counter just in case
 while getopts ":t:r:p:l:" opt; do
-	case ${opt} in
-		t)
-			fgs_model=${OPTARG}
-			;;
-		r)
-			fgs_train_dir=${OPTARG}
-			;;
-		p)
-			threads=${OPTARG}
-			;;
-		l)
-			logfile=${OPTARG}
-			;;
-		\?)
-			(>&2 echo "[ $(date -u) ]: ERROR: Invalid option: '-${OPTARG}'. Exiting...")
-			exit 1
-			;;
-		:)
-			(>&2 echo "[ $(date -u) ]: ERROR: argument needed following '-${OPTARG}'. Exiting...")
-			exit 1
-			;;
-    esac
+  case ${opt} in
+    t)
+      fgs_model=${OPTARG}
+      ;;
+    r)
+      fgs_train_dir=${OPTARG}
+      ;;
+    p)
+      threads=${OPTARG}
+      ;;
+    l)
+      logfile=${OPTARG}
+      ;;
+    \?)
+      (>&2 echo "[ $(date -u) ]: ERROR: Invalid option: '-${OPTARG}'. Exiting...")
+      exit 1
+      ;;
+    :)
+      (>&2 echo "[ $(date -u) ]: ERROR: argument needed following '-${OPTARG}'. Exiting...")
+      exit 1
+    ;;
+  esac
 done
 
 # Set positional arguments
