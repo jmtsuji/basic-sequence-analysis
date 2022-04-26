@@ -15,7 +15,7 @@ if [ $# -lt 1 ]; then
   printf "${script_name}: Prints names of sequences in a FastQ file.\n"
   printf "Version: ${VERSION}\n"
   printf "Copyright Jackson M. Tsuji, 2022\n"
-  printf "Contact Jackson M. Tsuji (jackson.tsuji@uwaterloo.ca) for bug reports or feature requests.\n"
+  printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: seqtk.\n\n"
   printf "Usage: ${0##*/} fastQ_file.fastq.gz > fastQ_names.list\n\n"
   printf "Details:\n"
