@@ -210,7 +210,7 @@ for query in ${queries[@]}; do
         if [ ${filter_element} != "False" ]; then
 			# Filter the results by an additional optional filter criterion for the query
 			# If the element does not contain the grep query, then
-			if ! cat ${query_file} | xtract -pattern DocumentSummary -element ${filter_element} | grep -q "${query}"; then
+			if ! cat ${query_file} | xtract -pattern ${filter_element} -element ${filter_element} | grep -q "${query}"; then
 				# Don't work with this entry; does not match filter criteria. Skip.
 				skipped_entries=$((${skipped_entries}+1))
 				continue
@@ -219,20 +219,20 @@ for query in ${queries[@]}; do
 
 		# Parse important info out of the results page. Should only be one entry each.
 		# TODO - consider checking for entry length to confirm
-		organism=($(cat ${query_file} | xtract -pattern DocumentSummary -element Organism))
-		species=($(cat ${query_file} | xtract -pattern DocumentSummary -element SpeciesName))
-		isolate=($(cat ${query_file} | xtract -pattern DocumentSummary -element Isolate))
-		assembly_name=($(cat ${query_file} | xtract -pattern DocumentSummary -element AssemblyName))
+		organism=($(cat ${query_file} | xtract -pattern Organism -element Organism))
+		species=($(cat ${query_file} | xtract -pattern SpeciesName -element SpeciesName))
+		isolate=($(cat ${query_file} | xtract -pattern Isolate -element Isolate))
+		assembly_name=($(cat ${query_file} | xtract -pattern AssemblyName -element AssemblyName))
 		
 		# Get RefSeq if present but GenBank otherwise
-		if [ $(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_RefSeq | wc -m) -lt 2 ]; then
+		if [ $(cat ${query_file} | xtract -pattern FtpPath_RefSeq -element FtpPath_RefSeq | wc -m) -lt 2 ]; then
 		    download_db="GenBank"
-		    ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_GenBank))
-		    accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element Genbank))
+		    ftp_base=($(cat ${query_file} | xtract -pattern FtpPath_GenBank -element FtpPath_GenBank))
+		    accession=($(cat ${query_file} | xtract -pattern Genbank -element Genbank))
 		else
             download_db="RefSeq"
-		    ftp_base=($(cat ${query_file} | xtract -pattern DocumentSummary -element FtpPath_RefSeq))
-		    accession=($(cat ${query_file} | xtract -pattern DocumentSummary -element RefSeq))
+		    ftp_base=($(cat ${query_file} | xtract -pattern FtpPath_RefSeq -element FtpPath_RefSeq))
+		    accession=($(cat ${query_file} | xtract -pattern RefSeq -element RefSeq))
 		fi
 		rm ${query_file}
 
