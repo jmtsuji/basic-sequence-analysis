@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # fasta_dealign.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Description: Switches between DNA and RNA (U's and T's)
 
 # Startup processes
@@ -16,7 +16,7 @@ if [ $# -lt 2 ]; then
   # Help statement
   printf "${script_name}: swaps between U's and T's in FastA file (DNA <--> RNA).\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: basic bash/awk\n\n"
   printf "Usage: ${0##*/} [U_to_T | T_to_U] input.fasta > output.fasta\n\n"

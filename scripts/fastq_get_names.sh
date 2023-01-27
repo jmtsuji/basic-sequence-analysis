@@ -2,7 +2,7 @@
 set -euo pipefail
 # fastq_get_names.sh
 # Prints names of sequences in a FastQ file
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 
 # Startup processes
 VERSION=$(basic-sequence-analysis-version)
@@ -14,7 +14,7 @@ if [ $# -lt 1 ]; then
   # Help statement
   printf "${script_name}: Prints names of sequences in a FastQ file.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: seqtk.\n\n"
   printf "Usage: ${0##*/} fastQ_file.fastq.gz > fastQ_names.list\n\n"

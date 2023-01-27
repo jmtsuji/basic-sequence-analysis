@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # text_find_and_replace.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Description: Finds and replaces target names in a file with user-provided names. Works for any text file (e.g., renaming FastA sequence headers, phylogenetic tree file names, and so on.
 
 # Startup processes
@@ -17,7 +17,7 @@ if [ $# -lt 3 ]; then
   # Help statement
   printf "${script_name}: finds and replaces selected text in a file.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: none outside of the basic-sequence-analysis suite\n\n"
   printf "Usage: ${0##*/} text_replacement_info_file.tsv input_file.txt output_file.txt 2>&1 | tee ${script_name}.log\n\n"

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # run_whole_genome_phylogeny.sh
 # Description: Given unaligned input sequences, creates a 16S rRNA gene phylogeny truncated to the region of interest.
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 
 script_version=$(basic-sequence-analysis-version)
 date_code=$(date '+%y%m%d')
@@ -12,6 +12,7 @@ date_code=$(date '+%y%m%d')
 if [ $# == 0 ]; then
   printf "\n$(basename $0): automated 16S/18S rRNA gene alignment and phylogeny building\n"
   printf "Version: ${script_version}\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for error reports or feature requests.\n\n"
   printf "Usage: $(basename $0) input_16S.fasta 16S_start 16S_end 16S_model RAxML_iterations seq_evol_model threads 2>&1 | tee $(basename $0 .sh).log \n\n"
   printf "Positional arguments:\n"

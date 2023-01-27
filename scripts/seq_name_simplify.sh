@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # seq_name_simplify.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Description: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses
 
 # Startup processes
@@ -16,7 +16,7 @@ if [ $# -lt 1 ]; then
   # Help statement
   printf "${script_name}: simplifies sequence names in FastA files to make them more suitable for bioinformatics analyses.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: seqtk\n\n"
   printf "Usage: ${0##*/} input.fasta > output.fasta\n\n"

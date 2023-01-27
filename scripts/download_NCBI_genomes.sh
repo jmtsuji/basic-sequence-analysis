@@ -1,6 +1,6 @@
 set -euo pipefail
 # download_NCBI_genomes.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Iteratively pull genomes from NCBI that match search queries
 
 # Startup processes
@@ -13,7 +13,7 @@ if [ $# -lt 2 ]; then
 
   # Help statement
   printf "${script_name}: pull genome data from NCBI.\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Version: ${VERSION}\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n\n"
   printf "Installation: Requires NCBI entrez-direct as a dependency. Can install via conda by: 'conda create -n eutils -c bioconda entrez-direct'.\n\n"

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # fasta_dealign.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Description: subsamples all FastX in specified folder to desired read number/fraction.
 
 # Startup processes
@@ -16,7 +16,7 @@ if [ $# -lt 4 ]; then
   # Help statement
   printf "${script_name}: subsamples all FastX files in specified folder to desired read number/fraction. E.g., for titration in metagenomic assembly or rarefaction of FastA files.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: seqtk\n\n"
   printf "Usage: ${0##*/} input_directory output_directory subset_size seed 2>&1 | tee $(basename $0 .sh).log\n\n"

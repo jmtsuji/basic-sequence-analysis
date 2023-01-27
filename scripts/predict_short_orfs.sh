@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # predict_short_orfs.sh
-# Jackson M. Tsuji, 2022
+# Jackson M. Tsuji, 2023
 
 VERSION=$(basic-sequence-analysis-version)
 script_name=${0##*/}
@@ -13,7 +13,7 @@ if [ $# -lt 1 ]; then
   # Help statement
   printf "${script_name}: predicts short ORFs from short read metagenome data.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: bbmap=38, FGS++ (tested with commit 471fdf7 of the LeeBergstrand fork)\n\n"
   printf "Usage: ${0##*/} [OPTIONS] input.fastq.gz > output.faa\n\n"

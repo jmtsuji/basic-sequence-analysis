@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # fasta_dealign.sh
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 # Description: De-aligns input multi-FastA file.
 
 # Startup processes
@@ -16,7 +16,7 @@ if [ $# -lt 1 ]; then
   # Help statement
   printf "${script_name}: de-aligns input multi-FastA file.\n"
   printf "Version: ${VERSION}\n"
-  printf "Copyright Jackson M. Tsuji, 2022\n"
+  printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n"
   printf "Dependencies: seqtk\n\n"
   printf "Usage: ${0##*/} input_aligned.fasta > output_dealigned.fasta\n\n"

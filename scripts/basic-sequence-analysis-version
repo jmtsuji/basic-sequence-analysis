@@ -2,9 +2,9 @@
 set -euo pipefail
 # basic-sequence-analysis-version
 # Master version record for basic-sequence-analysis package
-# Copyright Jackson M. Tsuji, 2022
+# Copyright Jackson M. Tsuji, 2023
 
 # TODO - find a more elegant way to set the version!
-VERSION=v1.4.0
+VERSION=v1.4.1
 
 echo "${VERSION}"
