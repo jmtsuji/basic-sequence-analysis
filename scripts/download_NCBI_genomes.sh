@@ -199,6 +199,7 @@ for query in ${queries[@]}; do
   rm "${output_directory}/tmp/query_hit.tmp" "${output_directory}/tmp/query_hit.tmp.trunc"
 
   skipped_entries=0
+  no_URL_entries=0
   # Now extract the data and download the sequences
   for i in $(seq 1 ${number_of_hits}); do
 
@@ -227,8 +228,18 @@ for query in ${queries[@]}; do
     # Get RefSeq if present but GenBank otherwise
     if [ $(cat ${query_file} | xtract -pattern FtpPath_RefSeq -element FtpPath_RefSeq | wc -m) -lt 2 ]; then
       download_db="GenBank"
-      ftp_base=($(cat ${query_file} | xtract -pattern FtpPath_GenBank -element FtpPath_GenBank))
       accession=($(cat ${query_file} | xtract -pattern Genbank -element Genbank))
+
+      # Also check if GenBank FTP path is there (sometimes it is removed if the entry was suppressed)
+      if [ $(cat ${query_file} | xtract -pattern FtpPath_GenBank -element FtpPath_GenBank | wc -m) -lt 2 ]; then
+        (>&2 printf "[ $(date -u) ]: WARNING: '${accession}' ('${organism}'; ${download_db}) ") 2>&1 | tee -a ${log_filepath}
+        (>&2 printf "had no available URL for download. Skipping.\n") 2>&1 | tee -a ${log_filepath}
+        no_URL_entries=$((${no_URL_entries}+1))
+        continue
+      else
+        ftp_base=($(cat ${query_file} | xtract -pattern FtpPath_GenBank -element FtpPath_GenBank))
+      fi
+
     else
       download_db="RefSeq"
       ftp_base=($(cat ${query_file} | xtract -pattern FtpPath_RefSeq -element FtpPath_RefSeq))
@@ -304,6 +315,9 @@ done
 failed_downloads=$(cat ${failed_downloads_filepath})
 if [ ${failed_downloads} -gt 0 ]; then
   (>&2 echo "[ $(date -u) ]: WARNING: ${failed_downloads} file downloads FAILED. See log for details.") 2>&1 | tee -a ${log_filepath}
+fi
+if [ ${no_URL_entries} -gt 0 ]; then
+  (>&2 echo "[ $(date -u) ]: WARNING: ${no_URL_entries} entries had no available URL for download and were skipped. See log for details.") 2>&1 | tee -a ${log_filepath}
 fi
 
 # Restore the old IFS
