@@ -16,7 +16,7 @@ if [ $# -lt 2 ]; then
   printf "Copyright Jackson M. Tsuji, 2023\n"
   printf "Version: ${VERSION}\n"
   printf "Contact Jackson M. Tsuji (jackson.tsuji@lowtem.hokudai.ac.jp) for bug reports or feature requests.\n\n"
-  printf "Installation: Requires NCBI entrez-direct as a dependency. Can install via conda by: 'conda create -n eutils -c bioconda entrez-direct'.\n\n"
+  printf "Installation: Requires NCBI entrez-direct as a dependency (version 15.6 is tested). Can install via conda by: 'conda create -n eutils -c bioconda entrez-direct'.\n\n"
   printf "Usage: ${0##*/} [OPTIONS] input_filepath output_directory\n\n"
   printf "Positional arguments:\n"
   printf "   1. input_filepath: Path to the file containing your queries. This can either be a simple list of queries separated by new lines or a tab-separated table where the query is in the first column, with no header. Queries can include GCA accessions (e.g., 'GCA_000168715.1'), strain IDs (e.g., 'DSM 13031'), organism taxonomy (e.g., 'Chlorobium')... really, anything you want. Will pull all genome assembly matches.\n"
