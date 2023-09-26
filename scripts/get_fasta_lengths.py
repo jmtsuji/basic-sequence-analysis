@@ -10,8 +10,8 @@ import argparse
 import logging
 from Bio import SeqIO
 
-# GLOBAL VARIABLES
-SCRIPT_VERSION = '0.2.0'
+# TODO - move this to a central location in the repo like basic-sequence-analysis-version
+SCRIPT_VERSION = 'v1.4.2'
 
 # Set up the logger
 logging.basicConfig(format='[ %(asctime)s UTC ]: %(module)s: %(levelname)s: %(message)s')
